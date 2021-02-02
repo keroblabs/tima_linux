@@ -1,0 +1,80 @@
+##############################################################################################
+#
+# Rules to build speex vocoder
+#
+##############################################################################################
+
+##############################################################################################
+# Start of main variables
+#
+
+SPEEX_PATH = $(DEFAULT_PATH)/speex
+
+#
+# End of main variables
+##############################################################################################
+
+##############################################################################################
+# Start of define section
+#
+
+# List all default C defines here, like -D_DEBUG=1
+DEFS +=
+
+# List all default ASM defines here, like -D_DEBUG=1
+ADEFS +=
+
+#
+# End of define section
+##############################################################################################
+
+##############################################################################################
+# Start of include section
+#
+
+# List all default directories to look for include files here
+CINCDIR += $(SPEEX_PATH)
+
+# End of include section
+##############################################################################################
+
+##############################################################################################
+# Start of source section
+#
+
+#SRC += $(SPEEX_PATH)/bits.c
+#SRC += $(SPEEX_PATH)/cb_search.c
+#SRC += $(SPEEX_PATH)/exc_10_16_table.c
+#SRC += $(SPEEX_PATH)/exc_10_32_table.c
+#SRC += $(SPEEX_PATH)/exc_20_32_table.c
+#SRC += $(SPEEX_PATH)/exc_5_256_table.c
+#SRC += $(SPEEX_PATH)/exc_5_64_table.c
+#SRC += $(SPEEX_PATH)/exc_8_128_table.c
+#SRC += $(SPEEX_PATH)/filters.c
+#SRC += $(SPEEX_PATH)/gain_table_lbr.c
+#SRC += $(SPEEX_PATH)/gain_table.c
+#SRC += $(SPEEX_PATH)/high_lsp_tables.c
+#SRC += $(SPEEX_PATH)/lpc.c
+#SRC += $(SPEEX_PATH)/lsp_tables_nb.c
+#SRC += $(SPEEX_PATH)/lsp.c
+#SRC += $(SPEEX_PATH)/ltp.c
+#SRC += $(SPEEX_PATH)/modes_nb.c
+#SRC += $(SPEEX_PATH)/nb_celp.c
+#SRC += $(SPEEX_PATH)/quant_lsp.c
+#SRC += $(SPEEX_PATH)/vq.c
+#SRC += $(SPEEX_PATH)/window.c
+
+#SRC += $(SPEEX_PATH)/iir_mem16.c
+#SRC += $(SPEEX_PATH)/signal_mul.c
+
+# List ASM source files here
+ASRC  +=
+
+#
+# End of source section
+##############################################################################################
+
+
+# *** EOF ***
+
+

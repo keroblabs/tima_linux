@@ -1,0 +1,39 @@
+##############################################################################################
+#
+# Rules to build console
+#
+##############################################################################################
+
+##############################################################################################
+# Start of main variables
+#
+
+TIMA_INCLUDES     = $(DEFAULT_PATH)/includes
+BOARD_APP_INCLUDE = $(DEFAULT_PATH)/Boards/$(BOARD_NAME)
+BOARD_LIB         = $(BOARD_APP_INCLUDE)/$(BOARD_NAME).a
+
+DEFS =
+ADEFS =
+
+CINCDIR =
+CINCDIR      += $(TIMA_INCLUDES)
+CINCDIR      += $(TIMA_INCLUDES)/Boards
+CINCDIR      += $(TIMA_INCLUDES)/c_lib
+CINCDIR      += $(TIMA_INCLUDES)/framework
+CINCDIR      += $(TIMA_INCLUDES)/graphics
+CINCDIR      += $(TIMA_INCLUDES)/system
+
+APP_PATH = $(DEFAULT_PATH)/Applications/$(PROJECT_PATH)
+
+BOARD_CFLAGS  = 
+BOARD_LDFLAGS = 
+
+include $(BOARD_APP_INCLUDE)/$(BOARD_NAME).make
+
+#
+# End of main variables
+##############################################################################################
+
+# *** EOF ***
+
+

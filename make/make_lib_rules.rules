@@ -1,0 +1,174 @@
+SRC += $(DEFAULT_PATH)/Applications/main.c
+
+ADEFS += -D__ASSEMBLY__
+
+# link information
+LDSCRIPT = $(PROJECT).elf.ld
+
+# Define optimisation level here
+OPT = -O3
+#OPT = -Os -gstabs
+
+# Define debug level
+##  -gdwarf-2
+DEBUG = -g
+#  -gstabs
+
+# CPU flags
+MCFLAGS = -mcpu=$(MCU) $(THUMB)
+
+# preprocessor flags
+ADEFS += $(CPU_ADEFS)
+DEFS  += $(CPU_DEFS)
+DEFS  += $(OS_DEFS)
+
+#include directories
+INCDIR  = $(patsubst %,-I %,$(CINCDIR))
+INCDIR += $(patsubst %,-I %,$(OS_CINCDIR))
+INCDIR += $(patsubst %,-I %,$(CPU_CINCDIR))
+
+#object and output files
+ALLSRC  = $(ASRC) $(SRC) $(OS_ASRC) $(OS_SRC) $(CPU_ASRC) $(CPU_SRC)
+OBJS    = $(ASRC:.s=.o) $(SRC:.c=.o) $(OS_ASRC:.s=.o) $(OS_SRC:.c=.o) $(CPU_ASRC:.s=.o) $(CPU_SRC:.c=.o)
+LIBS    = $(patsubst %,-L %,$(LIBDIR)) $(DLIBS) $(ULIBS)
+OUTDIR  = ./
+
+#
+# C/C++ compiler flags
+#
+# -fno-rtti
+
+CFLAGS = -c -fsigned-char -mlittle-endian
+#CFLAGS += -ffunction-sections
+#CFLAGS += -fno-exceptions
+CFLAGS += $(MCFLAGS)
+CFLAGS += $(DEFS)
+CFLAGS += $(INCDIR) -I.
+CFLAGS += $(OPT)
+CFLAGS += $(DEBUG)
+
+#
+# ASM compiler flags
+#
+
+ASMFLAGS = -c -x assembler-with-cpp
+ASMFLAGS += $(MCFLAGS)
+ASMFLAGS += $(ADEFS)
+ASMFLAGS += $(INCDIR)
+
+#
+# linker flags
+#
+
+LDFLAGS = -Wl,-Map -Xlinker ./$(PROJECT).map
+LDFLAGS += -Wl,--cref,--gc-sections
+#LDFLAGS += -nostdlib
+#LDFLAGS += -Wl,-nodefaultlibs
+LDFLAGS += -Wl,-static
+#LDFLAGS += -Wl,-nostartfiles
+LDFLAGS += -nostartfiles
+#LDFLAGS += -nodefaultlibs
+#LDFLAGS += -lc
+#LDFLAGS += -lm
+LDFLAGS += -lgcc
+#LDFLAGS += -lrdimon
+#LDFLAGS += -lstdc++
+#LDFLAGS += -L$(GCCPATH)/lib
+#LDFLAGS += -LC:/Tools/GCC_432/lib/ARM
+LDFLAGS += -L$(LIBDIR)
+LDFLAGS += -L$(GCCPATH)
+LDFLAGS += -Wl,-T -Xlinker $(LDDEF)
+LDFLAGS += $(CPU_LD)
+LDFLAGS += $(MCFLAGS)
+LDFLAGS += $(OBJS)
+#LDFLAGS += $(GCCPATH)/lib/ARM/std_sbrk_thumb.lib
+#LDFLAGS += $(GCCPATH)/lib/ARM/smallprintf_thumb.a
+#LDFLAGS += $(patsubst %,-L%,$(EXTRA_LIBDIRS))
+#LDFLAGS += $(patsubst %,-l%,$(EXTRA_LIBS))
+
+LD_LIB_FLAGS = $(OBJS)
+LD_LIB_FLAGS += -nostartfiles
+
+#
+# makefile rules
+#
+
+all: DO_FLASH
+clean: DO_CLEAN
+rebuild: DO_REBUILD
+
+#
+# internal makefile rules
+#
+
+DO_FLASH: show_start $(OBJS) $(PROJECT).elf show_finished
+DO_REBUILD: DO_CLEAN DO_FLASH
+DO_CLEAN: exec_clean
+
+#
+# internal rules
+#
+
+%o : %c
+	@echo ""
+	@$(CC) $(CFLAGS) $< -o $@
+	@$(SIZE) $@
+
+%o : %cpp
+	@echo ""
+	@$(CC) $(CPFLAGS) $< -o $@
+	@$(SIZE) $@
+
+%o : %s
+	@echo ""
+	@$(AS) $(ASMFLAGS) $< -o $@
+	@$(SIZE) $@
+
+%elf: $(OBJS)
+	@echo ""
+	@echo "Linking ... "
+	@echo ""
+	@$(LD) -r -o lib_$(PROJECT).o $(LD_LIB_FLAGS)
+
+%hex: %elf
+	@echo ""
+	@echo "Generating output HEX file"
+	@$(OBJCOPY) $< --target=ihex $@
+
+%bin: %elf
+	@echo ""
+	@echo "Generating output BIN file"
+	@$(OBJCOPY) $< --output-target=binary $@
+
+%dfu: %bin
+	@echo ""
+	@echo "Generating output DFU file"
+	@DFU_Converter 8000000 $(PROJECT).bin
+
+%dis: %elf
+	@echo ""
+	@echo "Generating DIS/BUG file"
+	@$(OBJDUMP) -D -t $(PROJECT).elf > $(PROJECT).dis
+	@$(OBJDUMP) -g $(PROJECT).elf > $(PROJECT).bug
+
+#
+# scripts
+#
+
+show_start:
+	@echo "Starting ..."
+	@$(CC) --version
+
+show_finished:
+	@echo ""
+	@echo "Finished!"
+
+exec_clean:
+	@echo "Erasing all object files - $(ARCH)_$(MODEL)"
+	@rm -f $(OBJS)
+	@rm -f $(PROJECT).elf
+	@rm -f $(PROJECT).map
+	@rm -f $(PROJECT).hex
+	@rm -f $(PROJECT).dis
+	@rm -f $(PROJECT).bug
+	@rm -f $(PROJECT).bin

@@ -1,0 +1,63 @@
+##############################################################################################
+#
+# Rules to build graphics library
+#
+##############################################################################################
+
+##############################################################################################
+# Start of main variables
+#
+
+GRAPHICS_PATH    = $(DEFAULT_PATH)/graphics
+GRAPHICS_INCLUDE = $(TIMA_INCLUDES)/graphics
+
+#
+# End of main variables
+##############################################################################################
+
+##############################################################################################
+# Start of define section
+#
+
+# List all default C defines here, like -D_DEBUG=1
+DEFS +=
+
+# List all default ASM defines here, like -D_DEBUG=1
+ADEFS +=
+
+#
+# End of define section
+##############################################################################################
+
+##############################################################################################
+# Start of include section
+#
+
+# List all default directories to look for include files here
+CINCDIR += $(GRAPHICS_INCLUDE)
+
+# End of include section
+##############################################################################################
+
+##############################################################################################
+# Start of source section
+#
+
+SRC += $(GRAPHICS_PATH)/graphics.c
+SRC += $(GRAPHICS_PATH)/fill_flood.c
+SRC += $(GRAPHICS_PATH)/draw.c
+SRC += $(GRAPHICS_PATH)/font_8x8.c
+SRC += $(GRAPHICS_PATH)/font_12x16.c
+SRC += $(GRAPHICS_PATH)/bitmap.c
+
+# List ASM source files here
+ASRC  +=
+
+#
+# End of source section
+##############################################################################################
+
+
+# *** EOF ***
+
+

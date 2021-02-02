@@ -1,0 +1,61 @@
+##############################################################################################
+#
+# Rules to build interface library
+#
+##############################################################################################
+
+##############################################################################################
+# Start of main variables
+#
+
+INTERFACE_PATH = $(DEFAULT_PATH)/interface
+
+#
+# End of main variables
+##############################################################################################
+
+##############################################################################################
+# Start of define section
+#
+
+# List all default C defines here, like -D_DEBUG=1
+DEFS +=
+
+# List all default ASM defines here, like -D_DEBUG=1
+ADEFS +=
+
+#
+# End of define section
+##############################################################################################
+
+##############################################################################################
+# Start of include section
+#
+
+# List all default directories to look for include files here
+CINCDIR += $(INTERFACE_PATH)
+
+# End of include section
+##############################################################################################
+
+##############################################################################################
+# Start of source section
+#
+
+SRC += $(INTERFACE_PATH)/debug.c
+#SRC += $(INTERFACE_PATH)/audio_layer.c
+SRC += $(INTERFACE_PATH)/timer.c
+SRC += $(INTERFACE_PATH)/epr_layer.c
+SRC += $(INTERFACE_PATH)/dummy_tty.c
+
+# List ASM source files here
+ASRC  +=
+
+#
+# End of source section
+##############################################################################################
+
+
+# *** EOF ***
+
+

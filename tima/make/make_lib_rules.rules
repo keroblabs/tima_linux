@@ -1,0 +1,197 @@
+##############################################################################################
+# Start of define section
+#
+
+LD      = $(TRGT)gcc
+CC      = $(TRGT)gcc
+CPP     = $(TRGT)g++
+CP      = $(TRGT)objcopy
+AR      = $(TRGT)ar
+AS      = $(TRGT)gcc -x assembler-with-cpp
+SIZE    = $(TRGT)size
+OBJCOPY = $(TRGT)objcopy
+OBJDUMP = $(TRGT)objdump
+BIN     = $(CP) -O ihex
+MAKE    = make
+CP      = cp
+SCP     = scp
+
+# List all default C defines here, like -D_DEBUG=1
+DEFS += 
+
+ADEFS += -D__ASSEMBLY__
+
+# List all default ASM defines here, like -D_DEBUG=1
+ADEFS +=
+
+CINCDIR += $(TIMA_INCLUDES)/Boards
+
+#
+# End of define section
+##############################################################################################
+
+# Define optimisation level here
+OPT = -O3
+#OPT = -Os -gstabs
+
+DEBUG = -g
+#  -gstabs
+
+# preprocessor flags
+ADEFS += $(CPU_ADEFS)
+DEFS  += $(CPU_DEFS)
+DEFS  += $(OS_DEFS)
+
+#include directories
+INCDIR  = $(patsubst %,-I %,$(CINCDIR))
+INCDIR += $(patsubst %,-I %,$(OS_CINCDIR))
+INCDIR += $(patsubst %,-I %,$(CPU_CINCDIR))
+
+#object and output files
+ALLSRC  = $(ASRC) $(SRC) $(OS_ASRC) $(OS_SRC) $(CPU_ASRC) $(CPU_SRC)
+OBJS    = $(ASRC:.s=.o) $(SRC:.c=.o) $(OS_ASRC:.s=.o) $(OS_SRC:.c=.o) $(CPU_ASRC:.s=.o) $(CPU_SRC:.c=.o)
+LIBS    = $(patsubst %,-L %,$(LIBDIR)) $(DLIBS) $(ULIBS)
+OUTDIR  = ./
+
+#
+# C/C++ compiler flags
+#
+# -fno-rtti
+
+CFLAGS = -c -std=c11 
+CFLAGS += $(DEFS)
+CFLAGS += $(INCDIR) -I.
+CFLAGS += $(OPT)
+CFLAGS += $(DEBUG)
+CFLAGS += $(BOARD_CFLAGS)
+
+#
+# ASM compiler flags
+#
+
+ASMFLAGS = -c -x assembler-with-cpp
+ASMFLAGS += $(ADEFS)
+ASMFLAGS += $(INCDIR)
+
+#
+# linker flags
+#
+
+LDFLAGS = -Wl,-Map -Xlinker ./$(PROJECT).map  
+#LDFLAGS += -lc
+#LDFLAGS += -lm
+LDFLAGS += -lgcc
+#LDFLAGS += -lrdimon
+#LDFLAGS += -lstdc++
+#LDFLAGS += -L$(GCCPATH)/lib
+LDFLAGS += -L$(LIBDIR)
+LDFLAGS += -L$(GCCPATH)
+LDFLAGS += $(OBJS)
+LDFLAGS += $(BOARD_LDFLAGS)
+
+ARFLAGS   =  rcs 
+
+#
+# makefile rules
+#
+
+all: DO_FLASH
+clean: DO_CLEAN
+rebuild: DO_REBUILD
+flash: DO_DOWNLOAD
+lib: DO_LIB
+
+#
+# internal makefile rules
+#
+
+DO_FLASH: show_start $(OBJS) $(PROJECT).elf $(PROJECT).dis $(PROJECT).scp show_finished
+DO_REBUILD: DO_CLEAN DO_FLASH
+DO_CLEAN: exec_clean
+DO_DOWNLOAD: $(PROJECT).hex $(PROJECT).bin $(PROJECT).fdn
+DO_LIB: show_start $(OBJS) $(BOARD_NAME).a show_finished
+
+# $(info $$CFLAGS is [${CFLAGS}])
+
+#
+# internal rules
+#
+
+%o : %c
+	@echo ""
+	@$(CC) $(CFLAGS) $< -o $@
+	@$(SIZE) $@
+
+%o : %cpp
+	@echo ""
+	@$(CPP) $(CFLAGS) $< -o $@
+	@$(SIZE) $@
+
+%o : %s
+	@echo ""
+	@$(AS) $(ASMFLAGS) $< -o $@
+	@$(SIZE) $@
+
+%a: $(OBJS)
+	@echo ""
+	@echo "Linking library... "
+	@echo ""
+	$(AR) $(ARFLAGS) $(LIBOUTPUT)/$@ $(OBJS)
+
+%elf: $(OBJS)
+	@echo ""
+	@echo "Linking ... "
+	@echo ""
+	$(LD) $(LDFLAGS) --output $(PROJECT)
+	@cp $(PROJECT) $(PROJECT).elf
+	$(SIZE) $(PROJECT)
+
+%dis: %elf
+	@echo ""
+	@echo "Generating DIS/BUG file"
+	@$(OBJDUMP) -D -t $(PROJECT) > $(PROJECT).dis
+	@$(OBJDUMP) -g $(PROJECT) > $(PROJECT).bug
+    
+%hex: %elf
+	@echo ""
+	@echo "Generating output HEX file"
+	@$(OBJCOPY) $< --target=ihex $@
+
+%bin: %elf
+	@echo ""
+	@echo "Generating output BIN file"
+	@$(OBJCOPY) $< --output-target=binary $@
+
+%fdn: %bin
+	@echo ""
+	@echo "Flashing to target"
+	@$(FLASHER) $(FLASHER_PARAM) $(PROJECT).bin $(FLASHER_ADDR) > $(PROJECT).fdn
+
+%scp: %elf
+	@echo ""
+ifdef USERNAME
+	@echo "Send application to target"
+	@$(SCP) $(PROJECT) $(USERNAME)@$(TARGET_NAME):$(TARGET_PATH)/$(PROJECT)
+endif
+	@echo $(PROJECT) > $(PROJECT).scp
+#
+# scripts
+#
+
+show_start:
+	@echo "Starting ..."
+	@$(CC) --version
+
+show_finished:
+	@echo ""
+	@echo "Finished!"
+
+exec_clean:
+	@echo "Erasing all object files - $(ARCH)_$(MODEL)"
+	@rm -f $(OBJS)
+	@rm -f $(PROJECT).elf
+	@rm -f $(PROJECT).map
+	@rm -f $(PROJECT).hex
+	@rm -f $(PROJECT).dis
+	@rm -f $(PROJECT).bug
+	@rm -f $(PROJECT).bin

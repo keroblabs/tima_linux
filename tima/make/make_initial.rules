@@ -1,0 +1,31 @@
+##############################################################################################
+#
+# Rules to build console
+#
+##############################################################################################
+
+##############################################################################################
+# Start of main variables
+#
+
+BOARD_PATH        = $(DEFAULT_PATH)/Boards/$(BOARD_NAME)
+TIMA_INCLUDES     = $(DEFAULT_PATH)/../includes
+BOARD_APP_INCLUDE = $(DEFAULT_PATH)/../Boards/$(BOARD_NAME)
+
+BOARD_CFLAGS  = 
+BOARD_LDFLAGS = 
+
+SRC  =
+ASRC =
+
+CINCDIR = $(TIMA_INCLUDES)
+
+include $(BOARD_APP_INCLUDE)/$(BOARD_NAME).make
+
+#
+# End of main variables
+##############################################################################################
+
+# *** EOF ***
+
+

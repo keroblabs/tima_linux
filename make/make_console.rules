@@ -1,0 +1,68 @@
+##############################################################################################
+#
+# Rules to build console
+#
+##############################################################################################
+
+##############################################################################################
+# Start of main variables
+#
+
+CONSOLE_PATH = $(DEFAULT_PATH)/console
+
+#
+# End of main variables
+##############################################################################################
+
+##############################################################################################
+# Start of define section
+#
+
+# List all default C defines here, like -D_DEBUG=1
+DEFS +=
+
+# List all default ASM defines here, like -D_DEBUG=1
+ADEFS +=
+
+#
+# End of define section
+##############################################################################################
+
+##############################################################################################
+# Start of include section
+#
+
+# List all default directories to look for include files here
+CINCDIR += $(CONSOLE_PATH)
+
+# End of include section
+##############################################################################################
+
+##############################################################################################
+# Start of source section
+#
+
+SRC += $(CONSOLE_PATH)/commands.c
+SRC += $(CONSOLE_PATH)/ymodem.c
+SRC += $(CONSOLE_PATH)/cmd_cat.c
+SRC += $(CONSOLE_PATH)/cmd_cd.c
+SRC += $(CONSOLE_PATH)/cmd_heap.c
+SRC += $(CONSOLE_PATH)/cmd_ls.c
+SRC += $(CONSOLE_PATH)/cmd_mkdir.c
+SRC += $(CONSOLE_PATH)/cmd_part.c
+SRC += $(CONSOLE_PATH)/cmd_rm.c
+SRC += $(CONSOLE_PATH)/cmd_rtc.c
+SRC += $(CONSOLE_PATH)/cmd_speex.c
+SRC += $(CONSOLE_PATH)/cmd_ymodem.c
+
+# List ASM source files here
+ASRC  +=
+
+#
+# End of source section
+##############################################################################################
+
+
+# *** EOF ***
+
+

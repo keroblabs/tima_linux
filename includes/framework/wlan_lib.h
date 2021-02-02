@@ -1,0 +1,25 @@
+#ifndef wlan_lib_h
+#define wlan_lib_h
+
+////////////////////////////////////////////////////////////////////////
+
+#include "types.h"
+#include "string_lib.h"
+
+////////////////////////////////////////////////////////////////////////
+
+////////////////////////////////////////////////////////////////////////
+
+string_t * wlan_scan_start( char * pattern );
+
+string_t * wlan_get_inet( char * interface );
+
+string_t * wlan_get_bssid( void );
+
+void wlan_get_gateway_ip( string_t * ip_addr, uint8_t gateway_index, uint8 * gateway_ip );
+
+void wlan_connect( char * interface, char * ssid, char * password );
+
+////////////////////////////////////////////////////////////////////////
+
+#endif /* wlan_lib_h */

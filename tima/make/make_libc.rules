@@ -1,0 +1,65 @@
+##############################################################################################
+#
+# Rules to build libc library
+#
+##############################################################################################
+
+##############################################################################################
+# Start of main variables
+#
+
+CLIB_PATH    = $(DEFAULT_PATH)/c_lib
+CLIB_INCLUDE = $(TIMA_INCLUDES)/c_lib
+
+#
+# End of main variables
+##############################################################################################
+
+##############################################################################################
+# Start of define section
+#
+
+# List all default C defines here, like -D_DEBUG=1
+DEFS +=
+
+# List all default ASM defines here, like -D_DEBUG=1
+ADEFS +=
+
+#
+# End of define section
+##############################################################################################
+
+##############################################################################################
+# Start of include section
+#
+
+# List all default directories to look for include files here
+CINCDIR += $(CLIB_INCLUDE)
+
+# End of include section
+##############################################################################################
+
+##############################################################################################
+# Start of source section
+#
+
+SRC += $(CLIB_PATH)/atoi.c
+SRC += $(CLIB_PATH)/date_time.c
+SRC += $(CLIB_PATH)/itoa.c
+SRC += $(CLIB_PATH)/memcpy.c
+SRC += $(CLIB_PATH)/sine_table.c
+SRC += $(CLIB_PATH)/str_compare.c
+SRC += $(CLIB_PATH)/str_token.c
+SRC += $(CLIB_PATH)/vsnprintk.c
+
+# List ASM source files here
+ASRC  +=
+
+#
+# End of source section
+##############################################################################################
+
+
+# *** EOF ***
+
+

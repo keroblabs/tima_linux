@@ -1,0 +1,73 @@
+##############################################################################################
+#
+# Rules to build framework library
+#
+##############################################################################################
+
+##############################################################################################
+# Start of main variables
+#
+
+FRAMEWORK_PATH    = $(DEFAULT_PATH)/framework
+FRAMEWORK_INCLUDE = $(TIMA_INCLUDES)/framework
+
+#
+# End of main variables
+##############################################################################################
+
+##############################################################################################
+# Start of define section
+#
+
+# List all default C defines here, like -D_DEBUG=1
+DEFS +=
+
+# List all default ASM defines here, like -D_DEBUG=1
+ADEFS +=
+
+#
+# End of define section
+##############################################################################################
+
+##############################################################################################
+# Start of include section
+#
+
+# List all default directories to look for include files here
+CINCDIR += $(FRAMEWORK_INCLUDE)
+
+# End of include section
+##############################################################################################
+
+##############################################################################################
+# Start of source section
+#
+
+SRC += $(FRAMEWORK_PATH)/buffer.c
+SRC += $(FRAMEWORK_PATH)/button_ctrl.c
+SRC += $(FRAMEWORK_PATH)/crc.c
+SRC += $(FRAMEWORK_PATH)/datalink.c
+SRC += $(FRAMEWORK_PATH)/debug.c
+#SRC += $(FRAMEWORK_PATH)/disc_utils.c
+SRC += $(FRAMEWORK_PATH)/message.c
+SRC += $(FRAMEWORK_PATH)/nmea.c
+SRC += $(FRAMEWORK_PATH)/lp_filter.c
+SRC += $(FRAMEWORK_PATH)/lists.c
+SRC += $(FRAMEWORK_PATH)/pipe.c
+SRC += $(FRAMEWORK_PATH)/random.c
+SRC += $(FRAMEWORK_PATH)/timer.c
+SRC += $(FRAMEWORK_PATH)/string_lib.c
+#SRC += $(FRAMEWORK_PATH)/t_lzw.c
+#SRC += $(FRAMEWORK_PATH)/vocoder.c
+
+# List ASM source files here
+ASRC  +=
+
+#
+# End of source section
+##############################################################################################
+
+
+# *** EOF ***
+
+

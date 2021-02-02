@@ -1,0 +1,16 @@
+#include "types.h"
+
+///////////////////////////////////////////////////////////////////////////
+
+int cocoa_get_adc_value( int index );
+
+///////////////////////////////////////////////////////////////////////////
+
+void adc_driver_init( void )
+{
+}
+
+uint16_t adc_driver_read( uint8_t index )
+{
+	return ( uint16_t )cocoa_get_adc_value(index);
+}

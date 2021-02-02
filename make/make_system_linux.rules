@@ -1,0 +1,61 @@
+##############################################################################################
+#
+# Rules to build system library
+#
+##############################################################################################
+
+##############################################################################################
+# Start of main variables
+#
+
+SYSTEM_PATH = $(DEFAULT_PATH)/system_linux
+
+#
+# End of main variables
+##############################################################################################
+
+##############################################################################################
+# Start of define section
+#
+
+# List all default C defines here, like -D_DEBUG=1
+#DEFS += -DTIMA_USE_CONFIG
+
+# List all default ASM defines here, like -D_DEBUG=1
+ADEFS +=
+
+#
+# End of define section
+##############################################################################################
+
+##############################################################################################
+# Start of include section
+#
+
+# List all default directories to look for include files here
+CINCDIR += $(SYSTEM_PATH)
+
+# End of include section
+##############################################################################################
+
+##############################################################################################
+# Start of source section
+#
+
+SRC += $(SYSTEM_PATH)/device.c
+SRC += $(SYSTEM_PATH)/socket_library.c
+SRC += $(SYSTEM_PATH)/system.c
+SRC += $(SYSTEM_PATH)/t_heap.c
+SRC += $(SYSTEM_PATH)/t_threads.c
+
+# List ASM source files here
+ASRC  +=
+
+#
+# End of source section
+##############################################################################################
+
+
+# *** EOF ***
+
+
