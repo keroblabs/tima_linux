@@ -10,8 +10,7 @@
 
 #import <Cocoa/Cocoa.h>
 
-@interface SDLMain : NSObject <NSApplicationDelegate, NSTableViewDelegate, NSTableViewDataSource>
-
+@interface SDLMain : NSObject
 @end
 
 #endif /* _SDLMain_h_ */

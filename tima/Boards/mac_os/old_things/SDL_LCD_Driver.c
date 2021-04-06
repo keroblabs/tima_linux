@@ -450,6 +450,10 @@ int lcd_driver_init( void )
     return 0;
 }
 
+void lcd_driver_release_frame( void )
+{
+}
+
 void lcd_driver_process( void )
 {
 	sdl_event_loop();

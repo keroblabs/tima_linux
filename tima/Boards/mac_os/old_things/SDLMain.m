@@ -10,6 +10,8 @@
 #include <sys/param.h> /* for MAXPATHLEN */
 #include <unistd.h>
 
+#include "gpio_driver.h"
+
 /* For some reaon, Apple removed setAppleMenu from the headers in 10.4,
  but the method still is there and works. To avoid warnings, we declare
  it ourselves here. */
@@ -42,6 +44,28 @@ static BOOL   gFinderLaunch;
 static BOOL   gCalledAppMainline = FALSE;
 
 static NSWindowController *wc;
+
+static int gpio_state[80];
+static int adc_value[16];
+static NSButton * gpio_out[80];
+
+static int button_posx;
+static int button_posy;
+
+static const char * gpio_names[80] = {
+    "PE00",  "PE01",  "PE02",  "PE03",  "PE04",  "PE05",  "PE06",  "PE07",
+    "PE08",  "PE09",  "PE10",  "PE11",  "PI14",  "PI15",  "PI00",  "PI01",
+    "PI02",  "PI03",  "PI10",  "PI11",  "PC03",  "PC07",  "PC16",  "PC17",
+    "PC18",  "PC23",  "PC24",  "PB03",  "PB04",  "PB05",  "PB06",  "PB07",
+    "PB08",  "PB10",  "PB11",  "PB12",  "PB13",  "PB14",  "PB15",  "PB16",
+    "PB17",  "PH24",  "PH25",  "PH26",  "PH27",  "PH00",  "PH02",  "PH07",
+    "PH09",  "PH10",  "PH11",  "PH12",  "PH13",  "PH14",  "PH15",  "PH16",
+    "PH17",  "PH18",  "PH19",  "PH20",  "PH21",  "PH22",  "PH23",  "PG00",
+    "PG01",  "PG02",  "PG03",  "PG04",  "PG05",  "PG06",  "PG07",  "PG08",
+    "PG09",  "PG10",  "PG11",  "PI16",  "PI17",  "PI18",  "PI19",
+};
+
+static id thisClass;
 
 static NSString *getApplicationName(void)
 {
@@ -198,7 +222,7 @@ static void setupWindowMenu(void)
 }
 
 /* Replacement for NSApplicationMain */
-static void CustomApplicationMain (int argc, char **argv)
+void CustomApplicationMain (int argc, const char **argv)
 {
     NSAutoreleasePool	*pool = [[NSAutoreleasePool alloc] init];
     SDLMain				*sdlMain;
@@ -297,10 +321,25 @@ static void CustomApplicationMain (int argc, char **argv)
     /* Set the main menu to contain the real app name instead of "SDL App" */
     [self fixMenu:[NSApp mainMenu] withAppName:getApplicationName()];
 #endif
-
-    //_wc = [[NSWindowController alloc] initWithWindowNibName:@"testwindow"];
-    wc = [[NSWindowController alloc] initWithWindowNibName:@"Window" ];
+    
+    wc = [[NSWindowController alloc] initWithWindowNibName:@"GPIO_Ctrl" ];
     [wc showWindow:self];
+    
+    thisClass = self;
+    
+    for( int i = 0; i < 80; i++ )
+    {
+        gpio_state[i] = 0;
+        gpio_out[i] = nil;
+    }
+    
+    for( int i = 0; i < 16; i++ )
+    {
+        adc_value[i] = 0;
+    }
+    
+    button_posx = 152;
+    button_posy = 455;
     
     /* Hand off to main application code */
     gCalledAppMainline = TRUE;
@@ -309,6 +348,183 @@ static void CustomApplicationMain (int argc, char **argv)
     /* We're done, thank you for playing */
     exit(status);
 }
+
+- (int)objc_window_ready
+{
+    NSArray *wn_array = [[NSApplication sharedApplication]windows];
+    if( wn_array == nil ) return 0;
+    
+    NSWindow * wn = [wn_array objectAtIndex:0];
+    printf( "Loaded %s %d\n", [[wn title]UTF8String], (int)[[[NSApplication  sharedApplication]windows]count] );
+
+    return 1;
+}
+
+- (int)objc_add_button:(int) gpio_index
+{
+    NSArray *wn_array = [[NSApplication sharedApplication]windows];
+    if( wn_array == nil ) return 0;
+
+    int total = (int)[wn_array count];
+    int index;
+    NSWindow * wn = NULL;
+    
+    for( index = 0; index < total; index++ )
+    {
+        wn = [wn_array objectAtIndex:index];
+        if( !strcmp( "Window", [[wn title]UTF8String]) ) break;
+        wn = NULL;
+    }
+    
+    if( wn != NULL )
+    {
+        NSView * view = [wn contentView];
+        
+        NSRect button_frame = NSMakeRect(button_posx + 35, button_posy, 55, 30);
+        NSRect label_frame = NSMakeRect(button_posx, button_posy-5, 55, 30);
+        
+        NSButton * button = [[NSButton alloc] initWithFrame:button_frame];
+        NSTextField * label = [[NSTextField alloc] initWithFrame:label_frame];
+        
+        char * button_name = ( char * )gpio_names[gpio_index];
+        
+        printf( "Button %s\n", button_name );
+        
+        [label setStringValue:[NSString stringWithUTF8String:button_name]];
+        [label setBezeled:NO];
+        [label setDrawsBackground:NO];
+        [label setEditable:NO];
+        [label setSelectable:NO];
+        
+        [button setBezelStyle:NSRegularSquareBezelStyle];
+        [button setTitle:@""];
+        [view addSubview:button];
+        [view addSubview:label];
+
+        gpio_out[gpio_index] = button;
+        button_posy -= 30;
+    }
+
+    return 1;
+}
+
+- (IBAction)oil_gpio_action:(id)sender
+{
+    NSButton * btn = ( NSButton * )sender;
+    
+    const char *c_id = [[btn identifier] UTF8String];
+    
+    if( !strcmp( c_id, "gpio_oil" ) )
+    {
+        gpio_state[(int)GPIO_PC23] = (int)[btn state];
+    }
+    else if( !strcmp( c_id, "handbrake_released" ) )
+    {
+        gpio_state[(int)GPIO_PE10] = (int)[btn state];
+    }
+    else if( !strcmp( c_id, "handbrake_pulled" ) )
+    {
+        gpio_state[(int)GPIO_PE11] = (int)[btn state];
+    }
+    else if( !strcmp( c_id, "ind_left" ) )
+    {
+        gpio_state[(int)GPIO_PE00] = (int)[btn state];
+    }
+    else if( !strcmp( c_id, "ind_right" ) )
+    {
+        gpio_state[(int)GPIO_PE01] = (int)[btn state];
+    }
+    else if( !strcmp( c_id, "hazard" ) )
+    {
+        gpio_state[(int)GPIO_PE06] = (int)[btn state];
+    }
+    else if( !strcmp( c_id, "ign_key" ) )
+    {
+        gpio_state[(int)GPIO_PC17] = (int)[btn state];
+    }
+    else if( !strcmp( c_id, "engine_run" ) )
+    {
+        gpio_state[(int)GPIO_PC16] = (int)[btn state];
+    }
+    else if( !strcmp( c_id, "headlights" ) )
+    {
+        gpio_state[(int)GPIO_PH09] = (int)[btn state];
+    }
+    else if( !strcmp( c_id, "fog_lights" ) )
+    {
+        gpio_state[(int)GPIO_PH10] = (int)[btn state];
+    }
+    else if( !strcmp( c_id, "full_beam" ) )
+    {
+        gpio_state[(int)GPIO_PC18] = (int)[btn state];
+    }
+    
+    //[btn identifier]
+    //printf("action: %s\n", c_id );
+}
+
+- (void)obj_c_set_gpio_state:(int)index setstate:(int)state
+{
+    NSImage * image;
+    NSButton * button = NULL;
+    
+    button = gpio_out[index];
+    if( button == NULL ) return;
+    
+    if( state )
+    {
+        image = [NSImage imageNamed:@"enable.png"];
+    }
+    else
+    {
+        image = [NSImage imageNamed:@"Zero.png"];
+    }
+
+    [button setImage:image];
+}
+
+- (IBAction)fuel_adc_action:(id)sender
+{
+    NSSlider * slider = ( NSSlider * )sender;
+    const char * c_id = [[slider identifier] UTF8String];
+
+    if( !strcmp( c_id, "adc_fuel" ) )
+    {
+        adc_value[0] = (int)[slider integerValue];
+    }
+    
+    //printf("action: %s\n", c_id );
+}
+
+int ui_is_window_ready( void )
+{
+    return [thisClass objc_window_ready];
+}
+
+int ui_add_button( int index )
+{
+    return [thisClass objc_add_button:index];
+}
+
+void set_gpio_state( int index, int state )
+{
+    [ thisClass obj_c_set_gpio_state:index setstate:state ];
+}
+
+int get_gpio_state( int index )
+{
+    if( (gpio_t)index == GPIO_PE06 )
+    {
+        //printf( "debug\n" );
+    }
+    return gpio_state[index];
+}
+
+int cocoa_get_adc_value( int index )
+{
+    return adc_value[index];
+}
+
 @end
 
 
@@ -353,10 +569,10 @@ static void CustomApplicationMain (int argc, char **argv)
 
 
 
+//#ifdef USING_CONSOLE_PROJECT
 #ifdef main
 #  undef main
 #endif
-
 
 /* Main entry point to executable - should *not* be SDL_main! */
 int main (int argc, char **argv)
@@ -386,4 +602,6 @@ int main (int argc, char **argv)
 #endif
     return 0;
 }
+//#endif
+
 
