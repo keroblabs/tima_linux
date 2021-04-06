@@ -62,7 +62,7 @@ void draw_circle( bitmap_t * curr_driver, uint16_t posx, uint16_t posy, int rati
 {
     int i, x, y;
     int ix = ( int )posx, iy = ( int )posy;
-    int prev_x, prev_y;
+    int prev_x = 0, prev_y = 0;
     
     for( i = 0; i < 360; i++ )
     {

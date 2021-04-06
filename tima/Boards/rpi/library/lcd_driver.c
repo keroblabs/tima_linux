@@ -3,7 +3,7 @@
 #include "t_threads.h"
 #include "touch.h"
 #include "video.h"
-#include "ms_timer.h"
+#include "timer_driver.h"
 
 ////////////////////////////////////////////////////////////////////////////////////////
 
@@ -164,7 +164,7 @@ uint16_t lcd_driver_height( void )
 	return lcd_height;
 }
 
-uint32_t * lcd_driver_get_buffer( void )
+void * lcd_driver_get_buffer( void )
 {
     //printf( "lcd_driver_get_buffer\n" );
 	return display_fb;

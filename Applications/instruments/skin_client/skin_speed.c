@@ -130,8 +130,6 @@ void skin_speed_hide( void )
 void skin_speed_reload( void )
 {
     void * lcd = graphics_claim();
-    graphics_reset_backup( local_speed.digits_data.backup );
-    show_7segs_large_digits_collect_backup( lcd, &local_speed.digits_data );
 
     draw_font_init( FONT_12x16 );
     draw_text_ex( lcd, SPEED_POSX + 150, SPEED_POSY + 160, ( char * )unit_str[local_speed.speed_unit], local_speed.digits_data.colour, NULL );

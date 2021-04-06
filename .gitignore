@@ -57,7 +57,6 @@ Applications/instruments/make_rpi4/instruments.map
 Applications/instruments/make_rpi4/instruments.scp
 Applications/instruments/skin_client/*.o
 Applications/instruments/source4/*.o
-Boards/
 configs.xml
 tima/Boards/nucleo_446/BSP/
 tima/Boards/nucleo_446/CMSIS/

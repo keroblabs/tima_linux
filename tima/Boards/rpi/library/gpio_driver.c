@@ -1,6 +1,7 @@
 #include "system.h"
 #include "spawn_lib.h"
 #include "wiringPi.h"
+#include "sections.h"
 
 ////////////////////////////////////////////////////////////////////
 
@@ -70,7 +71,7 @@ static const gpio_rpi_t gpio_list[] =
 
 ////////////////////////////////////////////////////////////////////
 
-void setup_io( void )
+static void setup_io( void )
 {
     wiringPiSetup();
 }
@@ -160,3 +161,5 @@ uint32_t gpio_get_counter( void * p_gpio, uint64_t * interval )
     *interval = 0;
     return 0;
 }
+
+SYSTEM_SECTION_CALL(setup_io, SYSTEM_INIT_MODULE);

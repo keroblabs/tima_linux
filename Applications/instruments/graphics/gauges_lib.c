@@ -7,6 +7,30 @@
 
 ////////////////////////////////////////////////////////////////////////////////////////
 
+typedef struct niddle_pos_t_
+{
+    uint16_t posx_start;
+    uint16_t posy_start;
+
+    uint16_t posx_end;
+    uint16_t posy_end;
+
+    uint16_t posx_start_left;
+    uint16_t posy_start_left;
+
+    uint16_t posx_start_right;
+    uint16_t posy_start_right;
+
+    uint16_t posx_end_left;
+    uint16_t posy_end_left;
+
+    uint16_t posx_end_right;
+    uint16_t posy_end_right;
+
+} niddle_pos_t;
+
+////////////////////////////////////////////////////////////////////////////////////////
+
 static void gauge_thread( void * args )
 {
     instruments_gauge_t * p_data = ( instruments_gauge_t * )args;
@@ -67,6 +91,27 @@ static void gauge_thread( void * args )
             tthread_condition_wait( p_data->cond );
         }
     }
+}
+
+static void get_niddle_pos( niddle_pos_t * pos, niddle_data_t * data, int rad )
+{
+    pos->posx_start = data->posx - ( ( cos_table( rad ) * ( data->circle_ratio ) ) >> 15 );
+    pos->posy_start = data->posy - ( ( sin_table( rad ) * ( data->circle_ratio ) ) >> 15 );
+
+    pos->posx_start_left = pos->posx_start - ( ( cos_table( rad + 1024 ) * data->niddle_width ) >> 15 );
+    pos->posy_start_left = pos->posy_start - ( ( sin_table( rad + 1024 ) * data->niddle_width ) >> 15 );
+
+    pos->posx_start_right = pos->posx_start - ( ( cos_table( rad - 1024 ) * data->niddle_width ) >> 15 );
+    pos->posy_start_right = pos->posy_start - ( ( sin_table( rad - 1024 ) * data->niddle_width ) >> 15 );
+
+    pos->posx_end = data->posx - ( ( cos_table( rad ) * data->niddle_len ) >> 15 );
+    pos->posy_end = data->posy - ( ( sin_table( rad ) * data->niddle_len ) >> 15 );
+
+    pos->posx_end_left = pos->posx_end - ( ( cos_table( rad + 1024 ) * (data->niddle_width_edge) ) >> 15 );
+    pos->posy_end_left = pos->posy_end - ( ( sin_table( rad + 1024 ) * (data->niddle_width_edge) ) >> 15 );
+
+    pos->posx_end_right = pos->posx_end - ( ( cos_table( rad - 1024 ) * (data->niddle_width_edge) ) >> 15 );
+    pos->posy_end_right = pos->posy_end - ( ( sin_table( rad - 1024 ) * (data->niddle_width_edge) ) >> 15 );
 }
 
 void gauge_thread_start( void * args )
@@ -219,14 +264,8 @@ void gauge_show_marks( void * p_lcd, uint16_t posx, uint16_t posy, int curr_angl
 
 void gauge_draw_niddle( void * p_lcd, niddle_data_t * data, int rad )
 {
-    uint16_t posx_end, posy_end;
-    uint16_t posx_end_left, posy_end_left;
-    uint16_t posx_end_right, posy_end_right;
-    
-    uint16_t posx_start, posy_start;
-    uint16_t posx_start_left, posy_start_left;
-    uint16_t posx_start_right, posy_start_right;
-    
+    niddle_pos_t niddle_pos;
+
     uint16_t posx_flood, posy_flood;
     bitmap_t * lcd = ( bitmap_t * )p_lcd;
     
@@ -236,25 +275,9 @@ void gauge_draw_niddle( void * p_lcd, niddle_data_t * data, int rad )
     {
         draw_circle( lcd, data->posx, data->posy, data->circle_ratio, data->circle_colour, data->niddle_backup );
     }
-    
-    posx_start = data->posx - ( ( cos_table( rad ) * ( data->circle_ratio ) ) >> 15 );
-    posy_start = data->posy - ( ( sin_table( rad ) * ( data->circle_ratio ) ) >> 15 );
-    
-    posx_start_left = posx_start - ( ( cos_table( rad + 1024 ) * data->niddle_width ) >> 15 );
-    posy_start_left = posy_start - ( ( sin_table( rad + 1024 ) * data->niddle_width ) >> 15 );
-    
-    posx_start_right = posx_start - ( ( cos_table( rad - 1024 ) * data->niddle_width ) >> 15 );
-    posy_start_right = posy_start - ( ( sin_table( rad - 1024 ) * data->niddle_width ) >> 15 );
-    
-    posx_end = data->posx - ( ( cos_table( rad ) * data->niddle_len ) >> 15 );
-    posy_end = data->posy - ( ( sin_table( rad ) * data->niddle_len ) >> 15 );
-    
-    posx_end_left = posx_end - ( ( cos_table( rad + 1024 ) * (data->niddle_width_edge) ) >> 15 );
-    posy_end_left = posy_end - ( ( sin_table( rad + 1024 ) * (data->niddle_width_edge) ) >> 15 );
-    
-    posx_end_right = posx_end - ( ( cos_table( rad - 1024 ) * (data->niddle_width_edge) ) >> 15 );
-    posy_end_right = posy_end - ( ( sin_table( rad - 1024 ) * (data->niddle_width_edge) ) >> 15 );
-    
+
+    get_niddle_pos( &niddle_pos, data, rad );
+
     posx_flood = data->posx - ( ( cos_table( rad ) * ( data->niddle_len/3 ) ) >> 15 );
     posy_flood = data->posy - ( ( sin_table( rad ) * ( data->niddle_len/3 ) ) >> 15 );
     
@@ -262,17 +285,21 @@ void gauge_draw_niddle( void * p_lcd, niddle_data_t * data, int rad )
     // bottom
     if( data->end_niddle )
     {
-        draw_line_backup( lcd, posx_start_left, posy_start_left, posx_start_right, posy_start_right, data->niddle_colour, data->niddle_backup );
+        draw_line_backup( lcd, niddle_pos.posx_start_left, niddle_pos.posy_start_left,
+                               niddle_pos.posx_start_right, niddle_pos.posy_start_right, data->niddle_colour, data->niddle_backup );
     }
     
     // right line
-    draw_line_backup( lcd, posx_start_left, posy_start_left, posx_end_left, posy_end_left, data->niddle_colour, data->niddle_backup );
+    draw_line_backup( lcd, niddle_pos.posx_start_left, niddle_pos.posy_start_left,
+                           niddle_pos.posx_end_left, niddle_pos.posy_end_left, data->niddle_colour, data->niddle_backup );
     
     // left line
-    draw_line_backup( lcd, posx_start_right, posy_start_right, posx_end_right, posy_end_right, data->niddle_colour, data->niddle_backup );
+    draw_line_backup( lcd, niddle_pos.posx_start_right, niddle_pos.posy_start_right,
+                           niddle_pos.posx_end_right, niddle_pos.posy_end_right, data->niddle_colour, data->niddle_backup );
     
     // top line
-    draw_line_backup( lcd, posx_end_left, posy_end_left, posx_end_right, posy_end_right, data->niddle_colour, data->niddle_backup );
+    draw_line_backup( lcd, niddle_pos.posx_end_left, niddle_pos.posy_end_left,
+                           niddle_pos.posx_end_right, niddle_pos.posy_end_right, data->niddle_colour, data->niddle_backup );
     
     // niddle
     if( ( data->niddle_width > 1 ) || ( data->niddle_width_edge > 1 ) )

@@ -7,7 +7,7 @@
 
 ///////////////////////////////////////////////////////////////
 
-typedef struct _lcd_driver_t
+typedef struct _lcd_driver_api_t
 {
 	uint16_t width;
 	uint16_t height;
@@ -32,7 +32,7 @@ typedef struct _lcd_driver_t
 
 	int ( *input_ts )( uint16_t * posx, uint16_t * posy, uint16_t * posz );
 
-} lcd_driver_t;
+} lcd_driver_api_t;
 
 ///////////////////////////////////////////////////////////////
 
@@ -40,7 +40,7 @@ typedef struct _lcd_driver_t
 
 ///////////////////////////////////////////////////////////////
 
-lcd_driver_t * lcd_layer_get_driver( void );
+lcd_driver_api_t * lcd_layer_get_driver( void );
 
 ///////////////////////////////////////////////////////////////
 

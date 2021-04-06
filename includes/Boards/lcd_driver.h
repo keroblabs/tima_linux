@@ -15,7 +15,8 @@ uint16_t lcd_driver_width( void );
 
 uint16_t lcd_driver_height( void );
 
-uint32_t * lcd_driver_get_buffer( void );
+void * lcd_driver_get_buffer( void );
+
 void lcd_driver_release_frame( void );
 
 int lcd_driver_read_mouse( uint16_t * posx, uint16_t * posy, uint16_t * posz );

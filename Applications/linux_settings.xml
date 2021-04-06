@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<cdtprojectproperties>
+<section name="org.eclipse.cdt.internal.ui.wizards.settingswizards.IncludePaths">
+<language name="holder for library settings">
+
+</language>
+<language name="Assembly">
+
+</language>
+<language name="GNU C++">
+
+</language>
+<language name="GNU C">
+<includepath>/Users/marciocherobim/Projects/tima_linux/Applications/instruments/source4</includepath>
+<includepath>/Users/marciocherobim/Projects/tima_linux/Applications/instruments/graphics</includepath>
+<includepath>/Users/marciocherobim/Projects/tima_linux/Applications/instruments/skin_client</includepath>
+<includepath>/Users/marciocherobim/Projects/tima_linux/includes</includepath>
+<includepath>/Users/marciocherobim/Projects/tima_linux/includes/Boards</includepath>
+<includepath>/Users/marciocherobim/Projects/tima_linux/includes/c_lib</includepath>
+<includepath>/Users/marciocherobim/Projects/tima_linux/includes/framework</includepath>
+<includepath>/Users/marciocherobim/Projects/tima_linux/includes/graphics</includepath>
+<includepath>/Users/marciocherobim/Projects/tima_linux/includes/system</includepath>
+
+</language>
+</section>
+<section name="org.eclipse.cdt.internal.ui.wizards.settingswizards.Macros">
+<language name="holder for library settings">
+
+</language>
+<language name="Assembly">
+
+</language>
+<language name="GNU C++">
+
+</language>
+<language name="GNU C">
+
+</language>
+</section>
+</cdtprojectproperties>

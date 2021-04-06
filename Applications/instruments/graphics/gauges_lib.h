@@ -54,6 +54,7 @@ typedef struct _draw_niddle_data_t
     pixel_t niddle_colour;
     pixel_t edge_colour;
     
+    bitmap_t * frame;
     graphics_backup_t * niddle_backup;
     
 } niddle_data_t;

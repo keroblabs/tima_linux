@@ -30,8 +30,6 @@ static bool_t lcd_ready = FALSE;
 static uint8_t lcd_mode;
 static bitmap_t lcd_buffer;
 static void * gr_mutex;
-static graphics_backup_t * post_flip;
-static uint8_t curr_frame;
 
 ///////////////////////////////////////////////////////////////
 
@@ -65,7 +63,7 @@ bitmap_t * graphics_init( void )
 
 	if( lcd_driver_init() < 0 )
 	{
-		DEBUG_PRINTK( "LCD failed\r\n" );
+		//DEBUG_PRINTK( "LCD failed\r\n" );
 		return NULL;
 	}
 
@@ -84,8 +82,6 @@ bitmap_t * graphics_init( void )
 
     lcd_ready = TRUE;
     gr_mutex = tthread_mutex_init();
-
-    post_flip = NULL;
 
     return &lcd_buffer;
 }
@@ -188,6 +184,25 @@ void graphics_copy_bitmap( bitmap_t * curr_driver, uint16_t posx, uint16_t posy,
 	}
 }
 
+void graphics_get_frame( bitmap_t * curr_driver, bitmap_t * bitmap, uint16_t posx, uint16_t posy )
+{
+    uint16_t width = bitmap->width;
+    uint16_t height = bitmap->height;
+    pixel_t * lcd_buffer_margin = curr_driver->buffer;
+    pixel_t * data = bitmap->buffer;
+
+    lcd_buffer_margin += ( uint32_t )( posy * curr_driver->width );
+    lcd_buffer_margin += ( uint32_t )( posx );
+
+    while( height-- )
+    {
+        memcpy( data, lcd_buffer_margin, sizeof( pixel_t ) * width );
+
+        lcd_buffer_margin += curr_driver->width;
+        data += width;
+    }
+}
+
 void graphics_show_bitmap_raw( bitmap_t * curr_driver, uint16_t posx, uint16_t posy, uint16_t width, uint16_t height, pixel_t * data )
 {
     pixel_t * lcd_buffer_margin = curr_driver->buffer;
@@ -237,30 +252,27 @@ void graphics_show_bitmap_bitblt( bitmap_t * curr_driver, uint16_t posx, uint16_
 void graphics_set_bitmap_rgb( bitmap_t * curr_driver, uint16_t posx, uint16_t posy, uint16_t width, uint16_t height,
 									pixel_t * data, pixel_t transparent, bool_t is_transparent )
 {
-	pixel_t * lcd_buffer_margin = curr_driver->buffer;
-	pixel_t * lcd_ptr;
+	pixel_t * lcd_buffer_margin;
 	uint16_t counter;
+	uint32_t index;
 
 	if( !lcd_ready ) return;
 
-	lcd_buffer_margin += ( uint32_t )( posy * curr_driver->width );
-	lcd_buffer_margin += ( uint32_t )( posx );
+	index = ( uint32_t )( posy * curr_driver->width ) + posx;
+	lcd_buffer_margin = &curr_driver->buffer[ index ];
 
 	while( height-- )
 	{
-        lcd_ptr = lcd_buffer_margin;
-
         for( counter = 0; counter < width; counter++ )
         {
-            if( ( data[ counter ] != transparent ) ||
-                ( is_transparent == FALSE ) )
-                *lcd_ptr = data[ counter ];
-
-            lcd_ptr++;
+            if( ( data[ counter ] != transparent ) || ( is_transparent == FALSE ) )
+            {
+                lcd_buffer_margin[ counter ] = data[ counter ];
+            }
         }
 
-		lcd_buffer_margin += curr_driver->width;
-		data += ( width );
+        lcd_buffer_margin += curr_driver->width;
+		data += width;
 	}
 }
 
@@ -298,7 +310,7 @@ void graphics_get_bitmap_rgb( bitmap_t * curr_driver, uint16_t posx, uint16_t po
 
 void graphics_fill_box( bitmap_t * curr_driver, uint16_t posx, uint16_t posy, uint16_t width, uint16_t height, pixel_t colour )
 {
-	uint16_t x,y,i;
+	uint16_t x,y;
 	pixel_t * d_pixel;
 	uint32_t index;
 
@@ -306,22 +318,20 @@ void graphics_fill_box( bitmap_t * curr_driver, uint16_t posx, uint16_t posy, ui
 	if( posx >= curr_driver->width ) return;
 	if( posy >= curr_driver->height ) return;
 
-	for( i = y = 0; y < height; y++ )
+	if( ( posx + width ) > curr_driver->width ) width = curr_driver->width - posx;
+    if( ( posy + height ) > curr_driver->height ) height = curr_driver->height - posy;
+
+    index = ((uint32_t)(posy+y) * curr_driver->width) + (uint32_t)posx;
+    d_pixel = &curr_driver->buffer[index];
+
+    for( y = 0; y < height; y++ )
 	{
-		if( ( y + posy ) >= curr_driver->height ) break;
-
-		index = ((uint32_t)(posy+y) * curr_driver->width) + (uint32_t)posx;
-		d_pixel = &curr_driver->buffer[index];
-
 		for( x = 0; x < width; x++ )
 		{
-			if( ( x + posx ) < curr_driver->width )
-			{
-				d_pixel[x] = colour;
-			}
-
-			i++;
+		    d_pixel[x] = colour;
 		}
+
+		d_pixel += curr_driver->width;
 	}
 }
 
@@ -406,7 +416,6 @@ void graphics_bitmap_1bb_ex_collect_backup( bitmap_t * curr_driver, uint16_t pos
 {
     uint16_t x;
     uint16_t y;
-    uint32_t backup_index;
     uint16_t bit_mask;
     uint32_t index;
     uint8_t * ptr_pixel;
@@ -500,7 +509,6 @@ void graphics_set_pixel_backup( bitmap_t * curr_driver, graphics_backup_t * back
 void graphics_set_pixel_index_backup( bitmap_t * curr_driver, graphics_backup_t * backup, uint32_t index, pixel_t colour )
 {
     graphics_add_backup( backup, index, curr_driver->buffer[index] );
-    graphics_add_backup( post_flip, index, curr_driver->buffer[index] );
     curr_driver->buffer[index] = colour;
 }
 
@@ -517,7 +525,6 @@ void graphics_restore_backup( bitmap_t * curr_driver, graphics_backup_t * backup
     {
         backup->curr_size--;
         curr_driver->buffer[backup->pixels[backup->curr_size].index] = backup->pixels[backup->curr_size].pixel;
-        graphics_add_backup( post_flip, backup->pixels[backup->curr_size].index, backup->pixels[backup->curr_size].pixel );
     }
 }
 

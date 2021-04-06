@@ -186,6 +186,44 @@ uint16_t show_7seg_draw_digits( void * p_lcd, uint16_t posx, uint16_t posy, char
     bitmap_t * lcd = ( bitmap_t * )p_lcd;
     int i;
     int j;
+
+    number_7seg_t * p_data = ( number_7seg_t * )data;
+    graphics_restore_backup( p_lcd, backup );
+
+    for( i = 0; i < (int)strlen(value); i++ )
+    {
+        curr_segs = ( ( value[i] >= 0x30 ) && ( value[i] <= 0x39 ) ) ? seg_list[value[i] & 0x0F] : 0;
+
+        if( curr_segs & SEG_A ) graphics_bitmap_1bb_ex( p_lcd, SEG_A_POS, VERT_SEGMENT, colour, backup ); // 600
+        if( curr_segs & SEG_B ) graphics_bitmap_1bb_ex( p_lcd, SEG_B_POS, VERT_SEGMENT, colour, backup );
+        if( curr_segs & SEG_C ) graphics_bitmap_1bb_ex( p_lcd, SEG_C_POS, VERT_SEGMENT, colour, backup );
+        if( curr_segs & SEG_D ) graphics_bitmap_1bb_ex( p_lcd, SEG_D_POS, VERT_SEGMENT, colour, backup );
+        if( curr_segs & SEG_E ) graphics_bitmap_1bb_ex( p_lcd, SEG_E_POS, HORZ_SEGMENT, colour, backup ); // 200
+        if( curr_segs & SEG_F ) graphics_bitmap_1bb_ex( p_lcd, SEG_F_POS, HORZ_SEGMENT, colour, backup );
+        if( curr_segs & SEG_G ) graphics_bitmap_1bb_ex( p_lcd, SEG_G_POS, HORZ_SEGMENT, colour, backup );
+
+        if( ( i > 0 ) && ( value[i-1] == '.' ) )
+        {
+            for( j = 0; j < 5; j++ )
+            {
+                graphics_set_pixel( lcd, posx-6+p_data->dp_offsetx, posy+j+p_data->dp_offsety, colour );
+                graphics_set_pixel( lcd, posx-5+p_data->dp_offsetx, posy+j+p_data->dp_offsety, colour );
+                graphics_set_pixel( lcd, posx-4+p_data->dp_offsetx, posy+j+p_data->dp_offsety, colour );
+            }
+        }
+
+        posx += p_data->width;
+    }
+
+    return posx;
+}
+
+uint16_t show_7seg_draw_digits_old( void * p_lcd, uint16_t posx, uint16_t posy, char * value, pixel_t colour, void * data, graphics_backup_t * backup )
+{
+    uint16_t curr_segs;
+    bitmap_t * lcd = ( bitmap_t * )p_lcd;
+    int i;
+    int j;
     graphics_backup_t * output;
     
     number_7seg_t * p_data = ( number_7seg_t * )data;

@@ -1,5 +1,5 @@
 #include "timer.h"
-#include "ms_timer.h"
+#include "timer_driver.h"
 #include "t_threads.h"
 
 ///////////////////////////////////////////////////////////////////////////////////////
@@ -42,7 +42,7 @@ static void timer_trigger_thread( void * args )
 
 time_t timer_Now( void )
 {
-	return ms_timer_now();
+    return 0; // ms_timer_now();
 }
 
 void timer_SetRTC( const time_t time )

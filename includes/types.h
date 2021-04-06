@@ -185,13 +185,7 @@ void mm_init( void );
 
 ////////////////////////////////////////////////////////////////////////////////////////
 
-//#define APP_RGB(r,g,b) ( ( pixel_t )( ( ( r & 0xF8 ) << 8 ) | ( ( g & 0xFC ) << 3 ) | ( ( ( b & 0xF8 ) >> 3 ) ) ) )
-
-#ifdef _USE_LINUX
 #define APP_RGB(r,g,b) ( ( pixel_t )( ( ( 0xFF ) << 24 ) | ( ( r ) << 16 ) | ( ( g ) << 8 ) | ( ( ( b ) << 0 ) ) ) )
-#else
-#define APP_RGB(r,g,b) ( ( pixel_t )( ( ( r ) << 24 ) | ( ( g ) << 16 ) | ( ( b ) << 8 ) | ( ( ( 0xff ) << 0 ) ) ) )
-#endif
 
 #ifdef _USE_LINUX
 #define DEBUG_PRINTK		printf

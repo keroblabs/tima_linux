@@ -2,6 +2,7 @@
 #include "t_threads.h"
 #include "buffer.h"
 #include "spawn_lib.h"
+#include "sections.h"
 
 #include <stdio.h>
 #include <string.h>
@@ -216,6 +217,14 @@ static void spawn_handler( void * data, const char * line )
     }
 }
 
+static void local_serial_init( void )
+{
+    for( int i = 0; i < SERIAL_MAX; i++ )
+    {
+        serial_data_list[i].serial_fs = -1;
+    }
+}
+
 int serial_get_usb_path( int index, char * tty_name )
 {
     if( index >= SERIAL_MAX ) return 0;
@@ -290,8 +299,7 @@ int serial_open_device( const char * tty_name, device_t * device, uint32_t baud 
 
 void serial_system_init( void )
 {
-    for( int i = 0; i < SERIAL_MAX; i++ )
-    {
-        serial_data_list[i].serial_fs = -1;
-    }
+    local_serial_init();
 }
+
+SYSTEM_SECTION_CALL(local_serial_init, SYSTEM_INIT_MODULE);
