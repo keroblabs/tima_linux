@@ -1,0 +1,22 @@
+#ifndef _DRIVER_CTRL_H_
+#define _DRIVER_CTRL_H_
+
+////////////////////////////////////////////////////////////////////
+
+#include "types.h"
+#include "home_data.h"
+#include "string_lib.h"
+
+////////////////////////////////////////////////////////////////////
+
+////////////////////////////////////////////////////////////////////
+
+bool_t driver_get( home_data_t * home_data, driver_t ** driver_data );
+bool_t driver_load( home_data_t * home_data, string_t * line, FILE * fp );
+
+void driver_process( home_data_t * home_data );
+void driver_save( home_data_t * home_data, FILE * fp );
+
+////////////////////////////////////////////////////////////////////
+
+#endif /* _DRIVER_CTRL_H_ */

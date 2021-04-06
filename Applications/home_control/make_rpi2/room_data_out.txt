@@ -1,0 +1,246 @@
+profile: very_cold_detail
+ 0,  0,  2,  0, 10
+ 2,  0,  3, 30, 17
+ 3, 30,  6, 20, 10
+ 6, 20,  9,  0, 21
+ 9,  0, 11,  0, 19
+11,  0, 13,  0, 20
+13,  0, 15,  0, 17
+15,  0, 18,  0, 20
+18,  0, 20,  0, 19
+20,  0, 22,  0, 21
+22,  0, 23, 59, 17
+
+profile: cold_detail
+ 0,  0,  6, 20, 10
+ 6, 20,  9,  0, 21
+ 9,  0, 11,  0, 19
+11,  0, 13,  0, 20
+13,  0, 15,  0, 17
+15,  0, 18,  0, 20
+18,  0, 20,  0, 19
+20,  0, 22,  0, 21
+22,  0, 23, 59, 17
+
+profile: very_cold_shower
+ 0,  0,  6, 20, 10
+ 6, 20,  8,  0, 21
+ 8,  0, 15,  0, 17
+15,  0, 17,  0, 19
+17,  0, 19,  0, 21
+19,  0, 21,  0, 19
+21,  0, 22,  0, 21
+22,  0, 23, 59, 19
+
+profile: nice_shower
+ 0,  0,  6, 20, 10
+ 6, 20,  8,  0, 20
+ 8,  0, 17,  0, 17
+17,  0, 19,  0, 21
+19,  0, 21,  0, 17
+21,  0, 22,  0, 21
+22,  0, 23, 59, 10
+
+profile: cold_normal
+ 0,  0,  6, 20, 10
+ 6, 20,  9,  0, 21
+ 9,  0, 15,  0, 17
+15,  0, 18,  0, 20
+18,  0, 21,  0, 21
+21,  0, 23, 59, 17
+
+profile: mild_normal
+ 0,  0,  6, 20, 10
+ 6, 20,  8,  0, 21
+ 9,  0, 17,  0, 17
+17,  0, 21,  0, 21
+21,  0, 23, 59, 17
+
+profile: nice_normal
+ 0,  0,  6, 20, 10
+ 6, 20,  8,  0, 20
+ 9,  0, 17,  0, 10
+18,  0, 20,  0, 20
+20,  0, 23, 59, 17
+
+profile: summer
+ 0,  0, 23, 59, 15
+
+profile: dogs_cold
+ 0,  0,  6, 20, 17
+ 6, 20,  8,  0, 20
+ 9,  0, 17,  0, 17
+17,  0, 21,  0, 17
+21,  0, 23, 59, 20
+
+profile: dogs_nice
+ 0,  0,  6, 20, 17
+ 6, 20,  8,  0, 20
+ 9,  0, 17,  0, 17
+17,  0, 21,  0, 17
+21,  0, 23, 59, 20
+
+profile: dogs_warm
+ 0,  0,  6, 20, 10
+ 6, 20,  8,  0, 20
+ 9,  0, 17,  0, 10
+17,  0, 21,  0, 10
+21,  0, 23, 59, 20
+
+profile: dogs_puppies
+ 0,  0,  6, 20, 17
+ 6, 20,  8,  0, 20
+ 9,  0, 17,  0, 17
+17,  0, 21,  0, 17
+21,  0, 23, 59, 20
+
+profile: observatory
+ 0,  0, 23, 59, 18
+
+profile: hot_water_summer
+ 0,  0, 16,  0,  0
+16,  0, 17,  0, 65
+17,  0, 20,  0,  0
+20,  0, 21,  0, 65
+21,  0, 23, 59,  0
+
+profile: hot_water_winter
+ 0,  0, 15,  0,  0
+15,  0, 17,  0, 65
+17,  0, 20,  0,  0
+20,  0, 21,  0, 65
+21,  0, 23, 59,  0
+
+settings: kennel_space
+dogs_warm
+dogs_warm
+summer
+summer
+
+settings: dogs_space
+dogs_cold
+dogs_cold
+dogs_nice
+summer
+
+settings: puppies_space
+dogs_puppies
+dogs_cold
+dogs_nice
+summer
+
+settings: family_space
+cold_detail
+cold_normal
+nice_normal
+summer
+
+settings: walking_space
+cold_normal
+cold_normal
+nice_normal
+summer
+
+settings: sleeping_space
+very_cold_detail
+cold_normal
+nice_normal
+summer
+
+settings: shower_space
+very_cold_shower
+nice_normal
+summer
+
+settings: observatory
+observatory
+observatory
+summer
+summer
+
+settings: hot_water_prog
+hot_water_winter
+hot_water_winter
+hot_water_summer
+hot_water_summer
+
+room: Living Room
+command: detail_living_room
+driver: boiler
+settings: family_space
+
+room: Kitchen
+command: detail_kitchen
+driver: boiler
+settings: family_space
+
+room: Guest Bedroom
+command: detail_guest_bed
+driver: boiler
+settings: sleeping_space
+
+room: Master Bedroom
+command: detail_master_bed
+driver: boiler
+settings: sleeping_space
+
+room: Second Bedroom 1
+command: details_second_bed_1
+driver: boiler
+settings: sleeping_space
+
+room: Second Bedroom 2
+command: details_second_bed_2
+driver: boiler
+settings: walking_space
+
+room: Computer Room
+command: details_computer_room
+driver: boiler
+settings: family_space
+
+room: Landing
+command: details_landing
+driver: boiler
+settings: walking_space
+
+room: Kennel1 Adults
+command: detail_dogs1_room1
+driver: heater_dogs1
+settings: dogs_space
+
+room: Kennel1 Room
+command: detail_dogs1_room2
+driver: heater_dogs2
+settings: kennel_space
+
+room: Kennel1 Puppies
+command: detail_dogs1_room3
+driver: heater_dogs2
+settings: puppies_space
+
+room: Kennel2 Adults
+command: detail_dogs2_room1
+driver: heater_dogs4
+settings: dogs_space
+
+room: Kennel2 Room
+command: detail_dogs2_room2
+driver: heater_dogs5
+settings: kennel_space
+
+room: Kennel2 Puppies
+command: detail_dogs2_room3
+driver: heater_dogs6
+settings: puppies_space
+
+room: Observatory
+command: detail_observatory
+driver: heater_observatory
+settings: observatory
+
+hot_water: Hot Water Program
+command: detail_hot_water
+driver: boiler
+settings: hot_water_prog
+

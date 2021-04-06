@@ -47,6 +47,15 @@ Thumbs.db
 *.flv
 *.mov
 *.wmv
+Applications/**/*.o
+Applications/**/*.bug
+Applications/**/*.dis
+Applications/**/*.elf
+Applications/**/*.map
+Applications/**/*.scp
+
+Applications/home_control/make_rpi/home_control
+Applications/home_control/make_rpi2/home_control
 
 Applications/instruments/graphics/*.o
 Applications/instruments/make_rpi4/instruments
@@ -76,3 +85,8 @@ tima/framework/*.o
 tima/graphics/*.o
 tima/system_linux/*.o
 tima/system_tima/*.o
+
+Applications/home_control/library/*.o
+Applications/home_control/source/*.o
+Applications/home_control/source2/*.o
+

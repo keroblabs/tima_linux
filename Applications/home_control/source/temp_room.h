@@ -1,0 +1,20 @@
+#ifndef _TEMP_ROOM_H_
+#define _TEMP_ROOM_H_
+
+//////////////////////////////////////////////////////////////////////////////////////
+
+#include "types.h"
+#include "string_lib.h"
+#include "settings.h"
+
+//////////////////////////////////////////////////////////////////////////////////////
+
+string_t * build_temperature_page( home_data_t * home_data );
+
+string_t * build_room_page( home_data_t * home_data, const char * room_ref );
+
+string_t * build_graph_page( home_data_t * home_data, const char * room_ref );
+
+//////////////////////////////////////////////////////////////////////////////////////
+
+#endif /* _TEMP_ROOM_H_ */

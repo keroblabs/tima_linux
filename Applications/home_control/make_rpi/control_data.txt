@@ -1,0 +1,48 @@
+schedule: central_heating_01
+profile: 1
+ 6,  0,  9,  0
+15,  0, 20,  0
+23,  0, 23, 50
+
+schedule: central_heating_02
+profile: 2
+ 6,  0,  8,  0
+17,  0, 20,  0
+
+schedule: central_heating_03
+profile: 3
+ 1,  0,  3,  0
+
+schedule: hot_water_01
+profile: 1
+ 6,  0,  9,  0
+15,  0, 20,  0
+23,  0, 23, 50
+
+schedule: hot_water_02
+profile: 2
+ 6,  0,  8,  0
+16,  0, 17,  0
+21,  0, 22,  0
+
+schedule: hot_water_03
+profile: 3
+ 6,  0,  7,  0
+16,  0, 17,  0
+21,  0, 22,  0
+
+schedule: test_timer
+22, 00, 23,  20
+
+driver: light_relay
+espeasy: 192.168.1.201/control?cmd=GPIO,12
+
+sensor: Switch_Light
+type: button
+value_on: 1
+value_off: 0
+
+controller: light_controller
+sensor: Switch_Light
+schedule: test_timer
+driver: light_relay
