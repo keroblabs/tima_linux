@@ -164,7 +164,7 @@ DO_DOWNLOAD: $(PROJECT).hex $(PROJECT).bin $(PROJECT).fdn
 	@echo ""
 ifdef USERNAME
 	@echo "Send application to target"
-	@$(SCP) $(PROJECT) $(USERNAME)@$(TARGET_NAME):~$(TARGET_PATH)/$(PROJECT)
+	@$(SCP) $(PROJECT) $(USERNAME)@$(TARGET_NAME):~/$(SSH_PATH)/$(PROJECT)
 endif
 	@echo $(PROJECT) > $(PROJECT).scp
 #

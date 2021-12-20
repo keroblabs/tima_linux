@@ -1,18 +1,16 @@
-#ifndef APPLICATIONS_INSTRUMENTS_SOURCE4_GPS_CTRL_H_
-#define APPLICATIONS_INSTRUMENTS_SOURCE4_GPS_CTRL_H_
+#ifndef SOURCE4_FUEL_CONTROL_H_
+#define SOURCE4_FUEL_CONTROL_H_
 
 ////////////////////////////////////////////////////////////////////
 
 #include "types.h"
-#include "nmea.h"
 
 ////////////////////////////////////////////////////////////////////
 
 ////////////////////////////////////////////////////////////////////
 
-bool_t gps_ctrl_get_nmea( nmea_data_t * data );
-void gps_ctrl_init( char * dev_name );
+void fuel_control_init( void );
 
 ////////////////////////////////////////////////////////////////////
 
-#endif /* APPLICATIONS_INSTRUMENTS_SOURCE4_GPS_CTRL_H_ */
+#endif /* SOURCE4_FUEL_CONTROL_H_ */

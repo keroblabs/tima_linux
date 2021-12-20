@@ -38,6 +38,7 @@ const info_row_message_t init_row_message[] =
     { "LOW FUEL",           InfoCentre_Low_Fuel,            FALSE,  INFOCENTRE_MESSAGE_TYPE_WARNING },
     { "LOW_WASHER",         InfoCentre_Low_Washer,          FALSE,  INFOCENTRE_MESSAGE_TYPE_WARNING },
     { "CAN FAILURE",        InfoCentre_CAN_Failure,         FALSE,  INFOCENTRE_MESSAGE_TYPE_WARNING },
+    { "KEY FAILURE",        InfoCentre_Key_Failure,         FALSE,  INFOCENTRE_MESSAGE_TYPE_WARNING },
 };
 
 ////////////////////////////////////////////////////////////////////////////////////////
@@ -52,6 +53,7 @@ static graphics_backup_t * backup_line3;
 static const char * info_row_text[Column_Info_MAX] =
 {
     "ENGINE TEMP",
+    "OIL TEMP",
     "FUEL USED",
     "FUEL IN TANK",
     "FUEL TO EMPTY",
@@ -72,6 +74,15 @@ static const char * info_row_message[InfoCentre_Message_MAX] =
     "LOW FUEL",
     "LOW_WASHER",
 	"CAN FAILURE",
+	"KEY_FAILURE",
+};
+
+static const char * info_row_elm_327[InfoCentre_ELM327_MAX] =
+{
+    "BITMAP",
+    "A1 29 [2:3]",
+    "A1 29 [4]",
+    "A1 7B",
 };
 
 static uint8_t infocentre_get_message_cnt( infocentre_data_t * p_data )
@@ -87,6 +98,33 @@ static uint8_t infocentre_get_message_cnt( infocentre_data_t * p_data )
     }
     
     return ret;
+}
+
+static void infocentre_show_elm327_row( void * p_lcd, infocentre_data_t * p_data )
+{
+    char info_str[INFOCENTRE_MESSAGE_LEN];
+    bitmap_t * lcd = ( bitmap_t * )p_lcd;
+
+    p_data->max_row_index = InfoCentre_ELM327_MAX;
+
+    graphics_restore_backup( lcd, backup_line1 );
+    graphics_restore_backup( lcd, backup_line2 );
+    graphics_restore_backup( lcd, backup_line3 );
+    draw_font_init(FONT_12x16);
+
+    draw_text_ex( lcd, INFOCENTRE_POSX(0), INFOCENTRE_LINE1, "ELM327 DATA", INFOCENTRE_TEXT_COLOUR, backup_line1 );
+    draw_text_ex( lcd, INFOCENTRE_POSX(0), INFOCENTRE_LINE2, info_row_elm_327[p_data->row_index], INFOCENTRE_TEXT_COLOUR, backup_line1 );
+
+    if( p_data->row_index == InfoCentre_ELM327_Bitmap )
+    {
+        sprintf( info_str, "0x%02x", p_data->elm_327_data[p_data->row_index] );
+    }
+    else
+    {
+        sprintf( info_str, "%d      ", p_data->elm_327_data[p_data->row_index] );
+    }
+
+    draw_text_ex( lcd, INFOCENTRE_POSX(0), INFOCENTRE_LINE3, info_str, INFOCENTRE_TEXT_COLOUR, backup_line1 );
 }
 
 static void infocentre_show_trip_row( void * p_lcd, infocentre_data_t * p_data )
@@ -144,6 +182,7 @@ static void infocentre_show_info_row( void * p_lcd, infocentre_data_t * p_data )
             break;
         
         case Column_Info_Engine_Temp:
+        case Column_Info_Oil_Temp:
             sprintf( info_str, "%3d DEGREE ", (int)p_data->info_list[p_data->row_index] );
             break;
 
@@ -226,6 +265,14 @@ static void infocentre_display( void * lcd, infocentre_data_t * p_data )
             {
                 infocentre_show_trip_row( lcd, p_data );
                 p_data->update_mask &= ~InfoCentre_Update_Odometer;
+            }
+            break;
+
+        case Column_Index_ELM327:
+            if( p_data->update_mask & InfoCentre_Update_ELM327 )
+            {
+                infocentre_show_elm327_row( lcd, p_data );
+                p_data->update_mask &= ~InfoCentre_Update_ELM327;
             }
             break;
     }

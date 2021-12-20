@@ -31,7 +31,7 @@ void buffer_init_static( buffer_data_t * buffer_data, uint8_t * buffer, uint32_t
 
 uint8_t buffer_read( buffer_data_t * buffer_data );
 uint32_t buffer_read_buffer( buffer_data_t * buffer_data, uint8_t * out_data, uint32_t size );
-uint32_t buffer_wait_for_data( buffer_data_t * buffer_data, uint8_t * buffer, uint32_t size );
+uint32_t buffer_wait_for_data( buffer_data_t * buffer_data, uint8_t * buffer, uint32_t size, uint32_t timeout );
 
 void buffer_write( buffer_data_t * buffer_data, uint8_t in_data );
 void buffer_write_buffer( buffer_data_t * buffer_data, uint8_t * in_data, uint32_t size );

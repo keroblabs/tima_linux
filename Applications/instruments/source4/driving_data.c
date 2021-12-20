@@ -38,6 +38,8 @@ static driving_data_command_t driving_commands[] =
 
 static driving_data_t driving_data;
 static void * driving_mutex;
+static message_data_t * message_data[MAX_APPLICATION_SKIN];
+
 
 ////////////////////////////////////////////////////////////////////
 
@@ -47,9 +49,9 @@ static void send_message( uint16_t message )
     
     for( count = 0; count < MAX_APPLICATION_SKIN; count++ )
     {
-        if( driving_data.message_data[count] != NULL )
+        if( message_data[count] != NULL )
         {
-            message_Post( driving_data.message_data[count], message+Message_User_Space );
+            message_Post( message_data[count], message+Message_User_Space );
         }
     }
 }
@@ -152,7 +154,7 @@ void driving_data_get_updated( driving_data_t * data )
 void driving_data_set_time( struct tm * time )
 {
     tthread_mutex_lock( driving_mutex );
-    driving_data.std_time = time;
+    driving_data.std_time = *time;
     tthread_mutex_unlock( driving_mutex );
     
     send_message( MessageSkin_UpdateTime );
@@ -160,13 +162,21 @@ void driving_data_set_time( struct tm * time )
 
 void driving_data_state_mask( state_mask_t flag, bool_t state )
 {
+    uint32_t prev_mask;
+    bool_t is_update;
+
     tthread_mutex_lock( driving_mutex );
+
+    prev_mask = driving_data.state_mask;
+
     if( state ) driving_data.state_mask |= ( 1 << (uint32_t)flag );
     else driving_data.state_mask &= ~( 1 << (uint32_t)flag );
-    //printf( "driving_data.state_mask= 0x%08x\n", driving_data.state_mask );
+
+    is_update = prev_mask != driving_data.state_mask;
+
     tthread_mutex_unlock( driving_mutex );
     
-    send_message( MessageSkin_StateMask );
+    if( is_update == TRUE ) send_message( MessageSkin_StateMask );
 }
 
 uint32_t driving_data_get_mask( void )
@@ -187,11 +197,20 @@ void driving_data_set_mask( uint32_t mask )
 
 void driving_data_set_reading_value( reading_values_t index, int value )
 {
+    bool_t is_update = FALSE;
+
     tthread_mutex_lock( driving_mutex );
-    if( index < Reading_MAX ) driving_data.reading_values[index] = value;
+    if( index < Reading_MAX )
+    {
+        is_update = ( driving_data.reading_values[index] != value );
+        driving_data.reading_values[index] = value;
+    }
     tthread_mutex_unlock( driving_mutex );
 
-    send_message( MessageSkin_ReadingValues );
+    if( is_update == TRUE )
+    {
+        send_message( MessageSkin_ReadingValues );
+    }
 }
 
 int driving_data_get_reading_value( reading_values_t index )
@@ -284,16 +303,16 @@ void driving_data_attach_skin( message_data_t * message )
 {
     int count;
     
-    driving_data_t * attach_driving_data = driving_data_lock();
+    tthread_mutex_lock( driving_mutex );
 
     for( count = 0; count < MAX_APPLICATION_SKIN; count++ )
     {
-        if( attach_driving_data->message_data[count] == NULL )
+        if( message_data[count] == NULL )
         {
-            attach_driving_data->message_data[count] = message;
+            message_data[count] = message;
             break;
         }
     }
 
-    driving_data_release();
+    tthread_mutex_unlock( driving_mutex );
 }

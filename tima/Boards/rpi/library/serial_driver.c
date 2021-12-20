@@ -33,6 +33,7 @@ typedef struct serial_data_t_
     char name[20];
     
     bool_t is_blocking;
+    uint32_t timeout;
 
     buffer_data_t rx_buffer;
     buffer_data_t tx_buffer;
@@ -162,7 +163,7 @@ static void serial_tx_thread( void * args )
 
     while( 1 )
     {
-        total_size = buffer_wait_for_data( &p_serial->tx_buffer, buffer, 32 );
+        total_size = buffer_wait_for_data( &p_serial->tx_buffer, buffer, 32, NEG_U32 );
         write_size = (int)write( p_serial->serial_fs, buffer, total_size );
     }
 }
@@ -178,7 +179,7 @@ static uint32_t serial_rx_channel( uint32_t index, uint8_t * data, uint32_t size
 
     if( serial_data->is_blocking == TRUE )
     {
-        return buffer_wait_for_data( &serial_data->rx_buffer, data, size );
+        return buffer_wait_for_data( &serial_data->rx_buffer, data, size, serial_data->timeout );
     }
     else
     {
@@ -201,6 +202,11 @@ uint32_t serial_io_ctrl( uint32_t index, uint32_t param, void * value )
     {
         bool_t * state = ( bool_t * )value;
         serial_data->is_blocking = *state;
+    }
+    else if( param == DEVICE_SET_TIMEOUT )
+    {
+        uint32_t * timeout = ( uint32_t * )value;
+        serial_data->timeout = *timeout;
     }
     return 0;
 }
@@ -259,6 +265,7 @@ int serial_open_device( const char * tty_name, device_t * device, uint32_t baud 
     memset( serial_data, 0x00, sizeof( serial_data_t ) );
 
     serial_data->mutex = tthread_mutex_init();
+    serial_data->timeout = NEG_U32;
 
     serial_data->serial_fs = open( tty_name, O_RDWR | O_NOCTTY );
     if( serial_data->serial_fs == -1 )

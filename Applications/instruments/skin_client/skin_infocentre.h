@@ -22,6 +22,7 @@ typedef enum
     InfoCentre_Update_Info     = 0x02,
     InfoCentre_Update_Messages = 0x04,
     InfoCentre_Update_Odometer = 0x08,
+    InfoCentre_Update_ELM327   = 0x10,
     
     InfoCentre_Update_All = 0xFF
     
@@ -30,6 +31,7 @@ typedef enum
 typedef enum
 {
     Column_Info_Engine_Temp,
+    Column_Info_Oil_Temp,
     Column_Info_Fuel_Used,
     Column_Info_Fuel_InTank,
     Column_Info_Fuel_ToEmpty,
@@ -48,6 +50,7 @@ typedef enum
     Column_Index_Info,
     Column_Index_Message,
     Column_Index_Odometer,
+    Column_Index_ELM327,
 
     Column_Index_MAX
 
@@ -63,10 +66,21 @@ typedef enum
     InfoCentre_Low_Fuel,
     InfoCentre_Low_Washer,
     InfoCentre_CAN_Failure,
+    InfoCentre_Key_Failure,
     
     InfoCentre_Message_MAX = 31
     
 } infocentre_msg_index_t;
+
+typedef enum
+{
+    InfoCentre_ELM327_Bitmap,
+    InfoCentre_ELM327_Field1,
+    InfoCentre_ELM327_Field2,
+    InfoCentre_ELM327_Field3,
+
+    InfoCentre_ELM327_MAX,
+} infocentre_elm327_index_t;
 
 typedef enum
 {
@@ -120,7 +134,9 @@ typedef struct _infocentre_data_t
     void * mutex;
     void * cond;
     
-    info_row_message_t row_message[INFOCENTRE_MESSAGE_MAX_COUNT];
+    info_row_message_t row_message[InfoCentre_Message_MAX];
+
+    int elm_327_data[InfoCentre_ELM327_MAX];
 
     uint32_t odometer;
     uint32_t trip_list[ODOMETER_TRIP_MAX_INDEX];
@@ -169,7 +185,7 @@ typedef struct _infocentre_data_t
 //////////////////////////////////////////////////////////////////////////////////////
 
 void infocentre_set_flag( void * pp_data, state_mask_t mask, bool_t state );
-void infocentre_set_reading( void * pp_data, reading_values_t reading, uint32_t value );
+void infocentre_set_reading( void * pp_data, reading_values_t reading, int value );
 
 void infocentre_load_trips( void * pp_data, uint32_t * trips );
 

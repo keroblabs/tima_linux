@@ -3,7 +3,7 @@
 #include "canbus_driver.h"
 #include "driving_data.h"
 #include "odometer_ctrl.h"
-#include "input_reader.h"
+#include "ignition_control.h"
 
 ////////////////////////////////////////////////////////////////////
 
@@ -124,7 +124,7 @@ static void canbus_watchdog_thread( void )
         tthread_sleep_ms( 1500 );
         new_value = get_counter();
 
-        if( input_reader_get_ignition_state() == TRUE )
+        if( ignition_control_get_state() == TRUE )
         {
             if( ( last_value == new_value ) && ( can_failure == FALSE ) )
             {
@@ -169,5 +169,5 @@ void canbus_conns_init( void )
     counter_mutex = tthread_mutex_init();
     can_counter = 0;
     canbus_start( "can0", CAN_DATA_RATE, can_filter, SIZE_OF_ARRAY(can_filter) );
-    tthread_create( canbus_watchdog_thread );
+    //tthread_create( canbus_watchdog_thread );
 }

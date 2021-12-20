@@ -31,6 +31,8 @@
 ////////////////////////////////////////////////////////////////////////////////////////
 
 typedef void ( *trig_pipe_t )( void );
+typedef void * ( *alloc_pipe_t )( uint16_t size );
+typedef void   ( *free_pipe_t )( void * input );
 
 typedef bool_t ( *pipe_data_check_t )( void * p_data, uint8_t * data, uint16_t size );
 
@@ -45,6 +47,9 @@ typedef struct _pipe_data_t
     
     uint8_t * pipe_list[ MAX_PIPE_SIZE ];
     uint16_t  pipe_size[ MAX_PIPE_SIZE ];
+
+    alloc_pipe_t alloc_hdl;
+    free_pipe_t free_hdl;
 
     void * mutex;
     void * cond;

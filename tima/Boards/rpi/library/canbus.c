@@ -62,13 +62,22 @@ static void can_read_thread( void * p_data )
     }
 }
 
+int canbus_send( int socket, CAN_msg_t * msg )
+{
+    struct can_frame frame;
+    frame.can_id = msg->id;
+    frame.can_dlc = msg->len;
+    memcpy( frame.data, msg->data, frame.can_dlc );
+    return (int)write( socket, &frame, sizeof(struct can_frame) );
+}
+
 static int open_can_socket(const char * can_port)
 {
     int s;
 
     if ((s = socket(PF_CAN, SOCK_RAW, CAN_RAW)) < 0)
     {
-       perror("Socket");
+       perror("CAN Socket");
        return -1;
     }
 
@@ -85,18 +94,19 @@ static int open_can_socket(const char * can_port)
 
     if (bind(s, (struct sockaddr *)&addr, sizeof(addr)) < 0)
     {
-       perror("Bind");
+       perror("CAN Bind");
        return -1;
     }
 
     return s;
 }
 
-void canbus_start( const char * can_port, uint32_t rate, const CAN_filter_t * filter, uint16_t filter_size )
+int canbus_start( const char * can_port, uint32_t rate, const CAN_filter_t * filter, uint16_t filter_size )
 {
     data.filter      = filter;
     data.filter_size = filter_size;
     data.can_socket  = open_can_socket( can_port );
 
     if( data.can_socket > 0 ) tthread_create_ex( can_read_thread, &data );
+    return data.can_socket;
 }

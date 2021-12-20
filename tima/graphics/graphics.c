@@ -284,8 +284,8 @@ void graphics_get_bitmap_rgb( bitmap_t * curr_driver, uint16_t posx, uint16_t po
 	uint32_t index;
 
 	if( !lcd_ready ) return;
-	if( posx >= lcd_driver_width() ) return;
-	if( posy >= lcd_driver_height() ) return;
+	if( posx >= curr_driver->width ) return;
+	if( posy >= curr_driver->height ) return;
 
 	p_pixel = curr_driver->buffer;
 

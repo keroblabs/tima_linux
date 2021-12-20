@@ -10,6 +10,12 @@
 #include "input_reader.h"
 #include "odometer_ctrl.h"
 #include "gps_ctrl.h"
+#include "elm_327_monitor.h"
+#include "logging_data.h"
+#include "lin_ctrl.h"
+#include "fuel_control.h"
+#include "ignition_control.h"
+#include "rear_bcm_comms.h"
 
 #include "skin_standard.h"
 #include "skin_infocentre.h"
@@ -20,6 +26,14 @@
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
+#ifdef TESTBENCH
+#define ELM327_SERIAL_DEV       "/dev/ttyUSB0"
+#define GPS_SERIAL_DEV          NULL
+#else
+#define ELM327_SERIAL_DEV       "/dev/ttyS0"
+#define GPS_SERIAL_DEV          "/dev/ttyUSB0"
+#endif
+
 ///////////////////////////////////////////////////////////////////////////////////////
 
 #if defined _USE_MACOS_SDL
@@ -29,6 +43,8 @@ int main( void )
 #endif
 {
     timer_data_t update_clock;
+    uint8_t minute_count;
+
     void * pp_data;
     //int test_rpm = 0;
     //int test_speed = 0;
@@ -37,6 +53,7 @@ int main( void )
     system_init();
 
     driving_data_init();
+    logging_data_init();
     touchscreen_lib_init();
 
 	timer_Init();
@@ -46,55 +63,45 @@ int main( void )
 
     input_reader_init();
     odometer_control_init();
-    gps_ctrl_init();
+    gps_ctrl_init( GPS_SERIAL_DEV );
     canbus_conns_init();
+    elm_327_monitor_init( ELM327_SERIAL_DEV );
 
-    timer_Start( &update_clock, 500 );
+    lin_ctrl_init();
+    lin_gpio_init();
+    fuel_control_init();
+    ignition_control_init();
+
+    logging_data_load();
+
+    timer_Start( &update_clock, 1000 );
+    minute_count = 0;
 
     printf( "Tima Instruments 2\r\n" );
-
-#if 0
-    driving_data_set_odometer( 225833 );
-    driving_data_set_reading_value( Reading_ShiftLightRPM, 6000 );
-    driving_data_send_message( MessageSkin_Reload );
-    
-    driving_data_state_mask( StateMask_Battery, TRUE );
-    driving_data_state_mask( StateMask_OilPressure, TRUE );
-    driving_data_state_mask( StateMask_Washers, TRUE );
-    driving_data_state_mask( StateMask_LowFuel, TRUE );
-    driving_data_state_mask( StateMask_FogLight, TRUE );
-    driving_data_state_mask( StateMask_EngineTemperature, TRUE );
-    driving_data_state_mask( StateMask_FullBeam, TRUE );
-    driving_data_state_mask( StateMask_EngineFault, TRUE );
-    //driving_data_state_mask( StateMask_in, TRUE );
-#endif
     
     while( 1 )
 	{
         if( timer_Check( &update_clock ) )
         {
-        	//time_t local_time;
-        	//time(&local_time);
-            //driving_data_set_time( localtime ( &local_time ) );
-        	//timer_Start( &update_clock, 5000 );
+            timer_Reload( &update_clock );
 
-        	//printf( "heap = %d .. thread = %d\n", mm_used(), mm_threads() );
-            
-            #if 0
-            driving_data_set_reading_value( Reading_RPM, test_rpm );
-            test_rpm += 1000;
-            if( test_rpm > 7500 ) test_rpm = 0;
-            
-            if( test_rpm == 6000 )
+            nmea_data_t nmea_data;
+            bool_t is_ready = gps_ctrl_get_nmea( &nmea_data );
+
+            if( is_ready == TRUE )
             {
-                driving_data_set_odometer(225834);
+                driving_data_set_time( &nmea_data.utc_date );
+                driving_data_set_reading_value( Reading_SpeedGPS, (int)nmea_data.ground_speed );
             }
-            
-            driving_data_set_speed(test_speed, Unit_Km, test_speed*6/10, Unit_Miles );
-            test_speed += 23;
-            if( test_speed > 250 ) test_speed = 0;
-            //printf( "benchmark: rpm = %lld, speed = %lld\r\n", skin_rpm_get_draw_time(), skin_speed_get_draw_time() );
-            #endif
+
+            if( ++minute_count >= 60 )
+            {
+                if( is_ready == TRUE )
+                {
+                    minute_count = 0;
+                    logging_data_save();
+                }
+            }
         }
         
         if( lcd_driver_read_mouse( &mouse_posx, &mouse_posy, &mouse_posz ) )

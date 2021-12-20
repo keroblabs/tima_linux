@@ -25,7 +25,8 @@ typedef struct
 
 ////////////////////////////////////////////////////////////////////
 
-void canbus_start( const char * can_port, uint32_t rate, const CAN_filter_t * filter, uint16_t filter_size );
+int canbus_start( const char * can_port, uint32_t rate, const CAN_filter_t * filter, uint16_t filter_size );
+int canbus_send( int socket, CAN_msg_t * msg );
 
 ////////////////////////////////////////////////////////////////////
 

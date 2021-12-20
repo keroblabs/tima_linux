@@ -14,6 +14,8 @@
 #include "skin_warning.h"
 #include "skin_fuel.h"
 #include "skin_temperature.h"
+#include "skin_oil_temp.h"
+#include "skin_oil_pressure.h"
 #include "skin_handbrake.h"
 
 ///////////////////////////////////////////////////////////////////////////////////////
@@ -44,6 +46,8 @@ static void update_hide( void )
     skin_warning_hide();
     skin_temperature_hide();
     skin_handbrake_hide();
+    skin_oil_temp_hide();
+    skin_oil_pressure_hide();
     
     infocentre_hide( pp_data );
 
@@ -69,9 +73,11 @@ static void update_reload( void )
     skin_fuel_reload();
     skin_warning_reload();
     skin_temperature_reload();
+    skin_oil_temp_reload();
+    skin_oil_pressure_reload();
 }
 
-static void update_skin_readings( reading_values_t reading, uint32_t value )
+static void update_skin_readings( reading_values_t reading, int value )
 {
     switch( reading )
     {
@@ -91,12 +97,20 @@ static void update_skin_readings( reading_values_t reading, uint32_t value )
             skin_temperature_set_value( value );
             break;
 
+        case Reading_OilTemp:
+            skin_oil_temp_set_value( value );
+            break;
+
+        case Reading_OilPressure:
+            skin_oil_pressure_set_value( value );
+            break;
+
         case Reading_ShiftLightRPM:
             skin_rpm_set_shift_light_value( value );
             break;
 
         case Reading_Odometer:
-            skin_odometer_set_value( value );
+            skin_odometer_set_value( (uint32_t)value );
             break;
     }
 }
@@ -234,7 +248,7 @@ static void skin_message_thread( void )
                     break;
                     
                 case MessageSkin_UpdateTime:
-                    infocentre_set_time( pp_data, rcvr_driving_data.std_time );
+                    infocentre_set_time( pp_data, &rcvr_driving_data.std_time );
                     local_driving_data.std_time = rcvr_driving_data.std_time;
                     break;
                     
@@ -290,6 +304,8 @@ void skin_standard_init( void * p_data )
     skin_fuel_init();
     skin_warning_init();
     skin_temperature_init();
+    skin_oil_temp_init();
+    skin_oil_pressure_init();
     skin_handbrake_init();
     
     tthread_create( skin_message_thread );

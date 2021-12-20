@@ -53,6 +53,7 @@ static infocentre_msg_index_t get_infocentre_message_from_mask( state_mask_t mas
         case StateMask_EngineTemperature:   return InfoCentre_Engine_Overheat;
         case StateMask_CANFailure:          return InfoCentre_CAN_Failure;
         case StateMask_DTC_Indicator:       return InfoCentre_DTC_Detected;
+        case StateMask_KeyMissing:          return InfoCentre_Key_Failure;
     }
 
     return InfoCentre_Message_MAX;
@@ -70,6 +71,7 @@ static column_info_t get_column_from_reading( reading_values_t reading )
         case Reading_EngineTemp:        return Column_Info_Engine_Temp;
         case Reading_BatteryVoltage:    return Column_Info_Battery_Voltage;
         case Reading_SpeedGPS:          return Column_Info_Speed_GPS;
+        case Reading_OilTemp:           return Column_Info_Oil_Temp;
     }
 
     return Column_Info_MAX;
@@ -103,11 +105,12 @@ void infocentre_set_flag( void * pp_data, state_mask_t mask, bool_t state )
     }
 }
 
-void infocentre_set_reading( void * pp_data, reading_values_t reading, uint32_t value )
+void infocentre_set_reading( void * pp_data, reading_values_t reading, int value )
 {
     infocentre_data_t * p_data = ( infocentre_data_t * )pp_data;
     column_info_t column_info = get_column_from_reading( reading );
     bool_t is_update = FALSE;
+    uint8_t elm_327_row;
 
     if( column_info != Column_Info_MAX )
     {
@@ -123,17 +126,38 @@ void infocentre_set_reading( void * pp_data, reading_values_t reading, uint32_t 
             tthread_condition_signal( p_data->cond );
         }
     }
-    else if( reading == Reading_Odometer )
+    else
     {
-        tthread_mutex_lock( p_data->mutex );
-        if( p_data->odometer != value ) is_update = TRUE;
-        p_data->odometer = value;
-        tthread_mutex_unlock( p_data->mutex );
-
-        if( ( p_data->is_enable == TRUE ) && ( is_update == TRUE ) && ( p_data->column_index == Column_Index_Odometer ) )
+        switch( reading )
         {
-            p_data->update_mask |= InfoCentre_Update_Odometer;
-            tthread_condition_signal( p_data->cond );
+            case Reading_Odometer:
+                tthread_mutex_lock( p_data->mutex );
+                if( p_data->odometer != value ) is_update = TRUE;
+                p_data->odometer = value;
+                tthread_mutex_unlock( p_data->mutex );
+
+                if( ( p_data->is_enable == TRUE ) && ( is_update == TRUE ) && ( p_data->column_index == Column_Index_Odometer ) )
+                {
+                    p_data->update_mask |= InfoCentre_Update_Odometer;
+                    tthread_condition_signal( p_data->cond );
+                }
+                break;
+
+            case Reading_ELM327_Bitmap:
+            case Reading_ELM327_Field1:
+            case Reading_ELM327_Field2:
+            case Reading_ELM327_Field3:
+                elm_327_row = reading - Reading_ELM327_Bitmap;
+                if( p_data->elm_327_data[elm_327_row] != value ) is_update = TRUE;
+                p_data->elm_327_data[elm_327_row] = value;
+
+                if( ( p_data->is_enable == TRUE ) && ( is_update == TRUE ) &&
+                    ( p_data->column_index == Column_Index_ELM327 ) && ( p_data->row_index == elm_327_row ) )
+                {
+                    p_data->update_mask |= InfoCentre_Update_ELM327;
+                    tthread_condition_signal( p_data->cond );
+                }
+                break;
         }
     }
 }

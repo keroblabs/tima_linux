@@ -10,6 +10,7 @@ SRC += $(BOARD_PATH)/library/gpio_driver.c
 SRC += $(BOARD_PATH)/library/spawn_lib.c
 SRC += $(BOARD_PATH)/library/canbus.c
 SRC += $(BOARD_PATH)/library/video.c
+SRC += $(BOARD_PATH)/library/capture.c
 
 DEFS += -D_USE_RPI -D_USE_LINUX -D_USE_MULTITHREAD -std=gnu99
 

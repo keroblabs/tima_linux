@@ -21,6 +21,7 @@
 							<builder id="org.eclipse.cdt.build.core.settings.default.builder.425706994" keepEnvironmentInBuildfile="false" managedBuildOn="false" name="Gnu Make Builder" superClass="org.eclipse.cdt.build.core.settings.default.builder"/>
 							<tool id="org.eclipse.cdt.build.core.settings.holder.libs.1240628045" name="holder for library settings" superClass="org.eclipse.cdt.build.core.settings.holder.libs"/>
 							<tool id="org.eclipse.cdt.build.core.settings.holder.1177397756" name="Assembly" superClass="org.eclipse.cdt.build.core.settings.holder">
+								<option id="org.eclipse.cdt.build.core.settings.holder.symbols.341918986" name="Symbols" superClass="org.eclipse.cdt.build.core.settings.holder.symbols" valueType="definedSymbols"/>
 								<inputType id="org.eclipse.cdt.build.core.settings.holder.inType.288782240" languageId="org.eclipse.cdt.core.assembly" languageName="Assembly" sourceContentType="org.eclipse.cdt.core.asmSource" superClass="org.eclipse.cdt.build.core.settings.holder.inType"/>
 							</tool>
 							<tool id="org.eclipse.cdt.build.core.settings.holder.1353074180" name="GNU C++" superClass="org.eclipse.cdt.build.core.settings.holder">
@@ -28,15 +29,18 @@
 							</tool>
 							<tool id="org.eclipse.cdt.build.core.settings.holder.1523758017" name="GNU C" superClass="org.eclipse.cdt.build.core.settings.holder">
 								<option id="org.eclipse.cdt.build.core.settings.holder.incpaths.1911277015" name="Include Paths" superClass="org.eclipse.cdt.build.core.settings.holder.incpaths" valueType="includePath">
-									<listOptionValue builtIn="false" value="/Users/marciocherobim/Projects/tima_linux/Applications/instruments/source4"/>
-									<listOptionValue builtIn="false" value="/Users/marciocherobim/Projects/tima_linux/Applications/instruments/graphics"/>
-									<listOptionValue builtIn="false" value="/Users/marciocherobim/Projects/tima_linux/Applications/instruments/skin_client"/>
-									<listOptionValue builtIn="false" value="/Users/marciocherobim/Projects/tima_linux/includes"/>
-									<listOptionValue builtIn="false" value="/Users/marciocherobim/Projects/tima_linux/includes/Boards"/>
-									<listOptionValue builtIn="false" value="/Users/marciocherobim/Projects/tima_linux/includes/c_lib"/>
-									<listOptionValue builtIn="false" value="/Users/marciocherobim/Projects/tima_linux/includes/framework"/>
-									<listOptionValue builtIn="false" value="/Users/marciocherobim/Projects/tima_linux/includes/graphics"/>
-									<listOptionValue builtIn="false" value="/Users/marciocherobim/Projects/tima_linux/includes/system"/>
+									<listOptionValue builtIn="false" value="/Users/marciocherobim/Projects/GIT_Dev/tima_linux/Applications/instruments/source4"/>
+									<listOptionValue builtIn="false" value="/Users/marciocherobim/Projects/GIT_Dev/tima_linux/Applications/instruments/graphics"/>
+									<listOptionValue builtIn="false" value="/Users/marciocherobim/Projects/GIT_Dev/tima_linux/Applications/instruments/skin_client"/>
+									<listOptionValue builtIn="false" value="/Users/marciocherobim/Projects/GIT_Dev/tima_linux/includes"/>
+									<listOptionValue builtIn="false" value="/Users/marciocherobim/Projects/GIT_Dev/tima_linux/includes/Boards"/>
+									<listOptionValue builtIn="false" value="/Users/marciocherobim/Projects/GIT_Dev/tima_linux/includes/c_lib"/>
+									<listOptionValue builtIn="false" value="/Users/marciocherobim/Projects/GIT_Dev/tima_linux/includes/framework"/>
+									<listOptionValue builtIn="false" value="/Users/marciocherobim/Projects/GIT_Dev/tima_linux/includes/graphics"/>
+									<listOptionValue builtIn="false" value="/Users/marciocherobim/Projects/GIT_Dev/tima_linux/includes/system"/>
+								</option>
+								<option id="org.eclipse.cdt.build.core.settings.holder.symbols.1426906149" superClass="org.eclipse.cdt.build.core.settings.holder.symbols" valueType="definedSymbols">
+									<listOptionValue builtIn="false" value="_USE_MULTITHREAD=1"/>
 								</option>
 								<inputType id="org.eclipse.cdt.build.core.settings.holder.inType.470620002" languageId="org.eclipse.cdt.core.gcc" languageName="GNU C" sourceContentType="org.eclipse.cdt.core.cSource,org.eclipse.cdt.core.cHeader" superClass="org.eclipse.cdt.build.core.settings.holder.inType"/>
 							</tool>

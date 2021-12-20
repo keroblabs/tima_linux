@@ -55,7 +55,7 @@ void spawn_command_ex( const char * command, spawn_line_handler_t handler, void 
 {
     FILE * fp;
 
-    printf( "spawn_command_ex %s\n", command );
+    // printf( "spawn_command_ex %s\n", command );
 
     fp = popen( command, "r" );
     if( fp == NULL ) return;

@@ -8,6 +8,7 @@
 
 ////////////////////////////////////////////////////////////////////////////////////////
 
+#define RPM_REFRESH_RATE_MS         10
 #define LCD_REFRESH_RATE_MS         22
 #define FUEL_REFRESH_RATE_MS        20
 #define TEMP_REFRESH_RATE_MS        25

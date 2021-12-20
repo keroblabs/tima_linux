@@ -67,6 +67,7 @@ SRC += $(BOARD_PATH)/library/gpio_driver.c
 SRC += $(BOARD_PATH)/library/spawn_lib.c
 SRC += $(BOARD_PATH)/library/canbus.c
 SRC += $(BOARD_PATH)/library/video.c
+SRC += $(BOARD_PATH)/library/capture.c
 
 # List ASM source files here
 

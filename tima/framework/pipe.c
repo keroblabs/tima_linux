@@ -50,7 +50,7 @@ void pipe_init( pipe_data_t * pipe_data, char * name, uint16_t size )
 
 	pipe_data->mutex = tthread_mutex_init();
 	pipe_data->cond = tthread_condition_create();
-
+	pipe_data->alloc_hdl = NULL;
     pipe_data->max_size = ( uint8_t )size;
 
     // add to the list
@@ -186,7 +186,7 @@ uint8_t * pipe_get( pipe_data_t * pipe, uint16_t * size )
 
 void pipe_send_buffer( pipe_data_t * pipe, uint8_t * buffer, uint16_t size )
 {
-    uint8_t * buf_tmp = pipe_alloc_buffer( size );
+    uint8_t * buf_tmp = pipe->alloc_hdl ? pipe->alloc_hdl( size ) : pipe_alloc_buffer( size );
     if( buf_tmp == NULL ) return;
     
     memcpy( buf_tmp, buffer, size );

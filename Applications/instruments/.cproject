@@ -28,15 +28,15 @@
 							</tool>
 							<tool id="org.eclipse.cdt.build.core.settings.holder.30575087" name="GNU C" superClass="org.eclipse.cdt.build.core.settings.holder">
 								<option id="org.eclipse.cdt.build.core.settings.holder.incpaths.86557242" name="Include Paths" superClass="org.eclipse.cdt.build.core.settings.holder.incpaths" valueType="includePath">
-									<listOptionValue builtIn="false" value="/Users/marciocherobim/Projects/tima_linux/Applications/instruments/source4"/>
-									<listOptionValue builtIn="false" value="/Users/marciocherobim/Projects/tima_linux/Applications/instruments/graphics"/>
-									<listOptionValue builtIn="false" value="/Users/marciocherobim/Projects/tima_linux/Applications/instruments/skin_client"/>
-									<listOptionValue builtIn="false" value="/Users/marciocherobim/Projects/tima_linux/includes"/>
-									<listOptionValue builtIn="false" value="/Users/marciocherobim/Projects/tima_linux/includes/Boards"/>
-									<listOptionValue builtIn="false" value="/Users/marciocherobim/Projects/tima_linux/includes/c_lib"/>
-									<listOptionValue builtIn="false" value="/Users/marciocherobim/Projects/tima_linux/includes/framework"/>
-									<listOptionValue builtIn="false" value="/Users/marciocherobim/Projects/tima_linux/includes/graphics"/>
-									<listOptionValue builtIn="false" value="/Users/marciocherobim/Projects/tima_linux/includes/system"/>
+									<listOptionValue builtIn="false" value="/Users/marciocherobim/Projects/GIT_Dev/tima_linux/Applications/instruments/source4"/>
+									<listOptionValue builtIn="false" value="/Users/marciocherobim/Projects/GIT_Dev/tima_linux/Applications/instruments/graphics"/>
+									<listOptionValue builtIn="false" value="/Users/marciocherobim/Projects/GIT_Dev/tima_linux/Applications/instruments/skin_client"/>
+									<listOptionValue builtIn="false" value="/Users/marciocherobim/Projects/GIT_Dev/tima_linux/includes"/>
+									<listOptionValue builtIn="false" value="/Users/marciocherobim/Projects/GIT_Dev/tima_linux/includes/Boards"/>
+									<listOptionValue builtIn="false" value="/Users/marciocherobim/Projects/GIT_Dev/tima_linux/includes/c_lib"/>
+									<listOptionValue builtIn="false" value="/Users/marciocherobim/Projects/GIT_Dev/tima_linux/includes/framework"/>
+									<listOptionValue builtIn="false" value="/Users/marciocherobim/Projects/GIT_Dev/tima_linux/includes/graphics"/>
+									<listOptionValue builtIn="false" value="/Users/marciocherobim/Projects/GIT_Dev/tima_linux/includes/system"/>
 								</option>
 								<inputType id="org.eclipse.cdt.build.core.settings.holder.inType.1054389532" languageId="org.eclipse.cdt.core.gcc" languageName="GNU C" sourceContentType="org.eclipse.cdt.core.cSource,org.eclipse.cdt.core.cHeader" superClass="org.eclipse.cdt.build.core.settings.holder.inType"/>
 							</tool>

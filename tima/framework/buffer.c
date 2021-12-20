@@ -211,14 +211,14 @@ bool_t buffer_is_empty( buffer_data_t * buffer_data )
     return ret;
 }
 
-uint32_t buffer_wait_for_data( buffer_data_t * buffer_data, uint8_t * buffer, uint32_t size )
+uint32_t buffer_wait_for_data( buffer_data_t * buffer_data, uint8_t * buffer, uint32_t size, uint32_t timeout )
 {
     if( buffer_data == NULL ) return 0;
     if( buffer_data->buffer == NULL ) return 0;
     
     if( buffer_is_empty( buffer_data ) )
     {
-        tthread_condition_wait( buffer_data->cond );        
+        tthread_condition_wait_timeout( buffer_data->cond, timeout );
     }
 
     return buffer_read_buffer( buffer_data, buffer, size );

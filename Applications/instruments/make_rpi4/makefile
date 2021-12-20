@@ -22,6 +22,7 @@ PROJECT_PATH = instruments
 BOARD_NAME = rpi
 USERNAME = pi
 TARGET_NAME = 192.168.1.181
+#TARGET_NAME = 10.0.0.3
 
 # Tima OS paths
 DEFAULT_PATH = ../../..
@@ -71,6 +72,11 @@ SRC += $(APP_PATH)/source4/canbus_conns.c
 SRC += $(APP_PATH)/source4/logging_data.c
 SRC += $(APP_PATH)/source4/odometer_ctrl.c
 SRC += $(APP_PATH)/source4/gps_ctrl.c
+SRC += $(APP_PATH)/source4/elm_327_monitor.c
+SRC += $(APP_PATH)/source4/lin_ctrl.c
+SRC += $(APP_PATH)/source4/fuel_control.c
+SRC += $(APP_PATH)/source4/ignition_control.c
+SRC += $(APP_PATH)/source4/rear_bcm_comms.c
 
 SRC += $(APP_PATH)/graphics/gauges_lib.c
 SRC += $(APP_PATH)/graphics/show_7segs_lib.c
@@ -86,6 +92,8 @@ SRC += $(APP_PATH)/skin_client/skin_odometer.c
 SRC += $(APP_PATH)/skin_client/skin_rpm.c
 SRC += $(APP_PATH)/skin_client/skin_speed.c
 SRC += $(APP_PATH)/skin_client/skin_temperature.c
+SRC += $(APP_PATH)/skin_client/skin_oil_temp.c
+SRC += $(APP_PATH)/skin_client/skin_oil_pressure.c
 SRC += $(APP_PATH)/skin_client/skin_warning.c
 
 

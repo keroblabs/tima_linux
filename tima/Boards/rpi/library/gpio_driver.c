@@ -65,6 +65,10 @@ static const gpio_rpi_t gpio_list[] =
     { GPIO_PE05, "GPIO_PE05", 17,  0 },
     { GPIO_PE06, "GPIO_PE06", 27,  2 },
     { GPIO_PE07, "GPIO_PE07", 22,  3 },
+    { GPIO_PE08, "GPIO_PE08", 21, 29 },
+    { GPIO_PE09, "GPIO_PE09", 25,  6 },
+    { GPIO_PE10, "GPIO_PE10", 23,  4 },
+    { GPIO_PE11, "GPIO_PE11", 7,  11 },
 
     { GPIO_MAX, NULL, -1,  -1 },
 };

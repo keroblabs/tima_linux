@@ -5,6 +5,7 @@
 #include <time.h>
 #include <signal.h>
 #include <unistd.h>
+#include <sys/time.h>
 
 ////////////////////////////////////////////////////////////////////////
 
@@ -280,6 +281,35 @@ void tthread_condition_wait( void * p_cond )
         pthread_cond_wait( &cond->condition, &cond->mutex );
     }
     
+    cond->is_continue = FALSE;
+    pthread_mutex_unlock( &cond->mutex );
+#endif
+}
+
+void tthread_condition_wait_timeout( void * p_cond, uint32_t timeout_ms )
+{
+    #if defined _USE_MULTITHREAD
+
+    tthread_condition_t * cond = ( tthread_condition_t * )p_cond;
+
+
+    pthread_mutex_lock( &cond->mutex );
+
+    while( cond->is_continue == FALSE )
+    {
+        if( timeout_ms != NEG_U32 )
+        {
+            struct timespec max_wait = {0, 0};
+            (void)clock_gettime( CLOCK_REALTIME, &max_wait );
+            max_wait.tv_nsec += ( timeout_ms * 1000 * 1000 );
+            pthread_cond_timedwait( &cond->condition, &cond->mutex, &max_wait );
+        }
+        else
+        {
+            pthread_cond_wait( &cond->condition, &cond->mutex );
+        }
+    }
+
     cond->is_continue = FALSE;
     pthread_mutex_unlock( &cond->mutex );
 #endif

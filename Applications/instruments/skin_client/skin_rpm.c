@@ -13,6 +13,7 @@ static instruments_gauge_t rpm_gauge_data;
 static niddle_data_t rpm_niddle_data;
 static bool_t is_enabled;
 static int shift_light_angle;
+static uint32_t last_time_stamp = 0;
 
 ////////////////////////////////////////////////////////////////////////////////////////
 
@@ -49,10 +50,10 @@ static void init_gauge_rpm( void )
     rpm_gauge_data.cond = tthread_condition_create();
     rpm_gauge_data.target = 0;
     rpm_gauge_data.curr_value = 0;
-    rpm_gauge_data.min_diff = 30;
-    rpm_gauge_data.min_inc = 21;
-    rpm_gauge_data.max_inc = 42;
-    rpm_gauge_data.base_diff = 128;
+    rpm_gauge_data.min_diff = 6;
+    rpm_gauge_data.min_inc = 10;
+    rpm_gauge_data.max_inc = 15;
+    rpm_gauge_data.base_diff = 64;
     rpm_gauge_data.initial_rate = LCD_REFRESH_RATE_MS;
     rpm_gauge_data.run_rate = LCD_REFRESH_RATE_MS;
     rpm_gauge_data.show_handler = show_rpm;
@@ -64,6 +65,8 @@ static void init_gauge_rpm( void )
 void skin_rpm_set_value( int value )
 {
     int new_value = ( value * 5543 ) >> 14;
+    //printf( "RPM %4d - %d\n", new_value, timer_get_MS() - last_time_stamp );
+    //last_time_stamp = timer_get_MS();
 
     tthread_mutex_lock( rpm_gauge_data.mutex );
     rpm_gauge_data.target = new_value;

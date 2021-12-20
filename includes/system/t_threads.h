@@ -50,6 +50,7 @@ void tthread_sleep_secs( int timeInSecs );
 
 void * tthread_condition_create( void );
 void tthread_condition_wait( void * p_cond );
+void tthread_condition_wait_timeout( void * p_cond, uint32_t timeout_ms );
 void tthread_condition_signal( void * p_cond );
 
 void tthread_cancel( void * p_thread );

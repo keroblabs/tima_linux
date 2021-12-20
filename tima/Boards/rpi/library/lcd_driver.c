@@ -57,7 +57,6 @@ static void mouse_thread( void )
 
         tthread_sleep_ms(30);
     }
-
 }
 
 static void mouse_init( void )

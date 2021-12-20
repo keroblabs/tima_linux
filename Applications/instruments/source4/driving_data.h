@@ -15,6 +15,10 @@
 
 ////////////////////////////////////////////////////////////////////
 
+//#define TESTBENCH
+
+////////////////////////////////////////////////////////////////////
+
 #if defined _USE_MACOS_SDL
 #define BITMAP_DIR "/Users/marciocherobim/Projects/linux_a20/tima_linux/Applications/instruments/bitmaps/"
 #else
@@ -45,8 +49,16 @@ typedef enum // set_value
     Reading_SpeedGPS,               // 9
     Reading_BatteryVoltage,         // 10
     Reading_ShiftLightRPM,          // 11
-    
-    Reading_Odometer,               // 12
+
+    Reading_OilTemp,
+    Reading_OilPressure,
+
+    Reading_Odometer,
+
+    Reading_ELM327_Bitmap,
+    Reading_ELM327_Field1,
+    Reading_ELM327_Field2,
+    Reading_ELM327_Field3,
 
     Reading_MAX,
 } reading_values_t;
@@ -141,7 +153,6 @@ enum
 typedef struct _driving_data_t
 {
     int                 reading_values[Reading_MAX];
-    
     uint32_t            trip_list[ODOMETER_TRIP_MAX_INDEX];
 
     start_mode_t        start_mode;
@@ -154,11 +165,8 @@ typedef struct _driving_data_t
     unit_display_t      secondary_unit;
 
     uint32_t            state_mask;
+    struct tm           std_time;
     
-    message_data_t *    message_data[MAX_APPLICATION_SKIN];
-    
-    struct tm *         std_time;
-
 } driving_data_t;
 
 ////////////////////////////////////////////////////////////////////
@@ -166,10 +174,9 @@ typedef struct _driving_data_t
 void driving_data_execute_command( string_t * command );
 
 driving_data_t * driving_data_lock( void );
+void driving_data_release( void );
 
 void driving_data_set_time( struct tm * time );
-
-void driving_data_release( void );
 
 void driving_data_get_updated( driving_data_t * data );
 
