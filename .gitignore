@@ -39,6 +39,7 @@ Thumbs.db
 *.app
 *.exe
 *.war
+*.swp
 
 # Large media files
 *.mp4
@@ -86,7 +87,26 @@ tima/graphics/*.o
 tima/system_linux/*.o
 tima/system_tima/*.o
 
+Applications/iso_to_can/make_rpi4/iso_to_can.*
+Applications/iso_to_can/make_rpi4/iso_to_can
+Applications/iso_to_can/Untitled.xml
+Applications/iso_to_can/source/*.o
+
+Applications/console_display/make_rpi/console_display.*
+Applications/console_display/make_rpi/console_display
+Applications/console_display/source/*.o
+Applications/console_display/Untitled.xml
+
+Applications/log_browser/Untitled.xml
+Applications/log_browser/source/*.o
+Applications/log_browser/make_rpi/log_browser
+Applications/log_browser/make_rpi/log_browser.*
+
 Applications/home_control/library/*.o
 Applications/home_control/source/*.o
 Applications/home_control/source2/*.o
+Applications/home_control/make_rpi/boiler_status
 
+Boards/rpi.a
+Boards/rpi/rpi.a
+Boards/rpi/wiringPi/

@@ -1,0 +1,27 @@
+#ifndef SOURCE_ELM_327_MONITOR_H_
+#define SOURCE_ELM_327_MONITOR_H_
+
+////////////////////////////////////////////////////////////////////
+
+#include "types.h"
+
+////////////////////////////////////////////////////////////////////
+
+typedef struct elm_327_data_t_
+{
+    long rpm;
+    int speed;
+    int temp;
+    uint8_t bitmask;
+
+} elm_327_data_t;
+
+////////////////////////////////////////////////////////////////////
+
+void elm_327_get_data( elm_327_data_t * data );
+void elm_327_monitor_init( void );
+bool_t elm_327_has_data( void );
+
+////////////////////////////////////////////////////////////////////
+
+#endif /* SOURCE_ELM_327_MONITOR_H_ */
