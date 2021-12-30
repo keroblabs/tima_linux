@@ -21,12 +21,9 @@ static uint32_t * curr_frame[2];
 static uint8_t frame_index;
 static bool_t frame_ready;
 
-//static bitmap_t lcd_driver_bitmap;
 static event_data_t event;
 
 static void * mouse_mutex;
-
-static int main_fd;
 
 ////////////////////////////////////////////////////////////////////////////////////////
 
@@ -92,22 +89,22 @@ static int lcd_video_init( void )
 
 static int lcd_init( void )
 {
-    int x, y;
+    int fd, x, y;
     struct fb_fix_screeninfo finfo;
     struct fb_var_screeninfo vinfo;
     uint32_t * local_fb;
 
-    if ((main_fd = open("/dev/fb0", O_RDWR)) == -1) {
+    if ((fd = open("/dev/fb0", O_RDWR)) == -1) {
         printf("Can't open /dev/fb0\n");
         return -1;
     }
 
-    if (ioctl(main_fd, FBIOGET_FSCREENINFO, &finfo)) {
+    if (ioctl(fd, FBIOGET_FSCREENINFO, &finfo)) {
         printf("FBIOGET_FSCREENINFO failed\n");
         return -2;
     }
 
-    if (ioctl(main_fd, FBIOGET_VSCREENINFO, &vinfo)) {
+    if (ioctl(fd, FBIOGET_VSCREENINFO, &vinfo)) {
         printf("FBIOGET_VSCREENINFO failed\n");
         return -3;
     }
@@ -115,7 +112,7 @@ static int lcd_init( void )
     vinfo.yres_virtual = vinfo.yres * 2;
     vinfo.yoffset = 0;
 
-    if (ioctl(main_fd, FBIOPUT_VSCREENINFO, &vinfo)) {
+    if (ioctl(fd, FBIOPUT_VSCREENINFO, &vinfo)) {
         printf("FBIOPUT_VSCREENINFO failed\n");
         return -4;
     }
@@ -131,15 +128,11 @@ static int lcd_init( void )
 
     printf( "finfo.smem_len = %d\n", finfo.smem_len );
 
-    local_fb = mmap(0, frame_size * 2, PROT_READ | PROT_WRITE, MAP_SHARED, main_fd, 0);
+    local_fb = mmap(0, frame_size * 2, PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
     if (local_fb == (void *)-1) {
         printf("mmap failed\n");
         return -6;
     }
-
-    //lcd_driver_bitmap.buffer = display_fb;
-    //lcd_driver_bitmap.width = lcd_width;
-    //lcd_driver_bitmap.height = lcd_height;
 
     memset( local_fb, 0x00, frame_size * 2 );
 
@@ -227,5 +220,4 @@ int lcd_driver_init( void )
 
     mouse_init();
     return lcd_init();
-    //return lcd_video_init();
 }
