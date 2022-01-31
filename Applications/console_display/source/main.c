@@ -38,6 +38,8 @@ int main( void )
 
     system_init();
     graphics_init();
+    lcd_driver_mouse_init( "/dev/input/event0" );
+
     hdmi_console_correction();
     timer_Init();
     yuv_to_rgb_init();
@@ -45,6 +47,7 @@ int main( void )
     bitmap_t * switch_bmp = bitmap_load_file( "switch_down.bmp" );
 
     void * lcd = graphics_claim();
+    printf( "LCD = 0x08lx\n", ( long )lcd );
     graphics_show_bitmap( ( bitmap_t * )lcd, 0, 75, switch_bmp, FALSE );
     //graphics_fill_box( lcd, 0, 0, 100, 100, APP_RGB(255,0,0) );
     graphics_release();

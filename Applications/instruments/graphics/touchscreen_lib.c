@@ -1,6 +1,7 @@
 #include "touchscreen_lib.h"
 #include "timer.h"
 #include "t_threads.h"
+#include "lcd_driver.h"
 
 ////////////////////////////////////////////////////////////////////////////////////////
 
@@ -215,6 +216,7 @@ void touchscreen_lib_set_handler( uint16_t posx1, uint16_t posy1, uint16_t posx2
 
 void touchscreen_lib_init( void )
 {
+    lcd_driver_mouse_init( "/dev/input/event0" );
     memset( app_list, 0x00, sizeof( app_list ) );
 
     reading_mutex = tthread_mutex_init();
