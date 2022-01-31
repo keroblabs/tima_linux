@@ -22,6 +22,7 @@ void lcd_driver_release_frame( void );
 int lcd_driver_read_mouse( uint16_t * posx, uint16_t * posy, uint16_t * posz );
 
 int lcd_driver_init( void );
+int lcd_driver_mouse_init( const char * dev );
 
 void lcd_driver_process( void );
 

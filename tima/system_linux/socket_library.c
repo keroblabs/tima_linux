@@ -21,7 +21,7 @@
 
 #define SOCKET                  int
 
-#define SOCKET_FF_PROBLEM
+#define __SOCKET_FF_PROBLEM
 
 ///////////////////////////////////////////////////////////////////////////
 
@@ -64,7 +64,7 @@ uint32_t socket_accept_port( uint32_t socket )
     {
         // 10035 = no connection accepted yet
         
-        if((errno != 10035)&&(errno != 35))
+        if((errno != 10035)&&(errno != 35)&&(errno != 11))
         {
             printf("accept error %d ", errno );
             return SOCKET_FAIL_LISTEN;
@@ -140,7 +140,7 @@ uint32_t socket_listen_port( uint16_t port )
 	}
     
 	setsockopt(_l_socket, SOL_SOCKET, SO_REUSEADDR, (char *) &on, sizeof(on));
-    //setNonblocking(_l_socket);
+    setNonblocking(_l_socket);
     
 	//---------------------------------------------------------
     
@@ -173,12 +173,11 @@ int socket_read_data( uint32_t socket, uint8_t *buffer, uint32_t max_size )
 {
     uint32_t num_bytes_present = 0;
 
-	#ifdef SOCKET_FF_PROBLEM
-	uint32_t i = 0;
-    #endif
-
     ioctl( socket, FIONREAD ,&num_bytes_present);
-	i = ( uint32_t )num_bytes_present;
+
+    #ifdef SOCKET_FF_PROBLEM
+    uint32_t i = ( uint32_t )num_bytes_present;
+    #endif
     
     if( ( num_bytes_present > 0 ) && ( buffer != NULL ) )
     {

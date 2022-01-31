@@ -9,10 +9,10 @@
 
 ////////////////////////////////////////////////////////////////////////////////////////
 
-int openTouchScreen()
+int openTouchScreen(const char * dev)
 {
     int fd;
-    if ((fd = open("/dev/input/event1", O_RDONLY)) >= 0)
+    if ((fd = open(dev, O_RDONLY)) >= 0)
     {
        return fd;
     }

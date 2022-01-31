@@ -4,7 +4,7 @@
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
-#define _MS_TIMER ( ms_timer_get_ms() )
+#define _MS_TIMER ( ms_timer_hw_get_ms() )
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
@@ -56,7 +56,7 @@ uint32_t timer_get_MS( void )
 
 uint64_t timer_get_microsecs( void )
 {
-	return ms_timer_get_us();
+	return ms_timer_hw_get_us();
 }
 
 uint32_t timer_32bit_now( void )
@@ -86,7 +86,7 @@ uint32_t timer_32bit_now( void )
 
 void timer_Init( void )
 {
-	ms_timer_init();
+    ms_timer_hw_global_init();
 }
 
 void timer_Trigger_Init( timer_trigger_t * ret, message_data_t * message )

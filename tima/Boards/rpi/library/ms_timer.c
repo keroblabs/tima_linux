@@ -10,7 +10,7 @@ static struct timeval ms_start;
 
 ///////////////////////////////////////////////////////////////////////////
 
-void ms_timer_init( void )
+void ms_timer_hw_global_init( void )
 {
 	if( is_init == TRUE ) return;
 	is_init = TRUE;
@@ -18,7 +18,7 @@ void ms_timer_init( void )
     gettimeofday( &ms_start, NULL );
 }
 
-uint32_t ms_timer_get_ms( void )
+uint32_t ms_timer_hw_get_ms( void )
 {
     struct timeval ms_value;
     long mtime, seconds, useconds;
@@ -32,7 +32,7 @@ uint32_t ms_timer_get_ms( void )
     return ( uint32_t )mtime;
 }
 
-uint64_t ms_timer_get_us( void )
+uint64_t ms_timer_hw_get_us( void )
 {
     struct timeval ms_value;
     long mtime, seconds, useconds;

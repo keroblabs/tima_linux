@@ -117,6 +117,14 @@ pixel_t * graphics_get_target( bitmap_t * curr_driver )
     return curr_driver->buffer;
 }
 
+pixel_t * graphics_get_target_at( bitmap_t * curr_driver, uint16_t posx, uint16_t posy )
+{
+    if( !lcd_ready ) return NULL;
+    uint32_t index = ((uint32_t)posy * curr_driver->width) + (uint32_t)posx;
+
+    return &curr_driver->buffer[index];
+}
+
 uint16_t graphics_width( bitmap_t * curr_driver )
 {
 	if( !lcd_ready ) return 0;
@@ -310,7 +318,7 @@ void graphics_get_bitmap_rgb( bitmap_t * curr_driver, uint16_t posx, uint16_t po
 
 void graphics_fill_box( bitmap_t * curr_driver, uint16_t posx, uint16_t posy, uint16_t width, uint16_t height, pixel_t colour )
 {
-	uint16_t x,y;
+	uint16_t x,y = 0;
 	pixel_t * d_pixel;
 	uint32_t index;
 

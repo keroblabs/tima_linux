@@ -7,10 +7,10 @@
 
 ///////////////////////////////////////////////////////////////////////////
 
-void ms_timer_init( void );
+void ms_timer_hw_global_init( void );
 
-uint32_t ms_timer_get_ms( void );
-uint64_t ms_timer_get_us( void );
+uint32_t ms_timer_hw_get_ms( void );
+uint64_t ms_timer_hw_get_us( void );
 time_t   ms_timer_now( void );
 
 ///////////////////////////////////////////////////////////////////////////

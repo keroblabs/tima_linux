@@ -75,6 +75,7 @@ void graphics_copy_bitmap( bitmap_t * curr_driver, uint16_t posx, uint16_t posy,
 int graphics_read_ts( uint16_t * posx, uint16_t * posy, uint16_t * posz );
 
 pixel_t * graphics_get_target( bitmap_t * curr_driver );
+pixel_t * graphics_get_target_at( bitmap_t * curr_driver, uint16_t posx, uint16_t posy );
 
 uint16_t graphics_width( bitmap_t * curr_driver );
 uint16_t graphics_height( bitmap_t * curr_driver );

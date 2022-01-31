@@ -14,17 +14,9 @@
 #define MIN_SOCKET_RESP_SIZE    25
 #define SOCKET_ERROR_TOKEN		"ERR"
 
-#define SOCKET_ACCEPTED         ( ( uint32_t )-4 )
 #define SOCKET_FAIL_OPEN        ( ( uint32_t )-3 )
 #define SOCKET_NOT_READY        ( ( uint32_t )-2 )
 #define SOCKET_FAIL_LISTEN      ( ( uint32_t )-1 )
-
-enum
-{
-    SOCKET_DEV_CONNECTED,
-    SOCKET_DEV_LISTENING,
-    SOCKET_DEV_ACCEPTED
-};
 
 //////////////////////////////////////////////////////////////////////////////////////
 

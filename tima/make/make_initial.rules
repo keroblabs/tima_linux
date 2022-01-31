@@ -20,7 +20,8 @@ ASRC =
 
 CINCDIR = $(TIMA_INCLUDES)
 
-include $(BOARD_APP_INCLUDE)/$(BOARD_NAME).make
+LIBOUTPUT =  $(BOARD_APP_INCLUDE)
+##include $(BOARD_APP_INCLUDE)/$(BOARD_NAME).make
 
 #
 # End of main variables

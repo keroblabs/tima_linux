@@ -38,22 +38,34 @@ typedef struct keyb_event
 
 typedef struct mouse_limits_t_
 {
-	int min_x;
-	int max_x;
-	int min_y;
-	int max_y;
+    int min_x;
+    int max_x;
+    int min_y;
+    int max_y;
 
-	int curr_x;
-	int curr_y;
+    int curr_x;
+    int curr_y;
 
-	int delta_x;
-	int delta_y;
+    int delta_x;
+    int delta_y;
 
-	uint8_t flags;
+    uint32_t time_x;
+    uint32_t time_y;
+    int target_x;
+    int target_y;
+    int start_x;
+    int start_y;
 
-	bool_t is_update;
+    bool_t mouse_button;
+    bool_t mouse_button2;
+    bool_t open_apple;
+    bool_t close_apple;
 
-	void * mutex;
+    uint8_t flags;
+
+    bool_t is_update;
+
+    void * mutex;
 
 } mouse_info_t;
 
@@ -70,11 +82,14 @@ void keybdrv_init( void );
 void keybdrv_mouse_set_limits( uint16_t min_x, uint16_t max_x, uint16_t min_y, uint16_t max_y );
 void keybdrv_mouse_set_pos( uint16_t posx, uint16_t posy );
 void keybdrv_mouse_get_joystick( uint16_t * posx, uint16_t * posy );
+void keybdrv_mouse_read_joystick( uint16_t * posx, uint16_t * posy );
 
-bool_t keybdrv_mouse_get_pos( uint16_t * posx, uint16_t * posy );
+bool_t keybdrv_mouse_get_pos( uint16_t * posx, uint16_t * posy, uint16_t * posz );
 
 bool_t keybdrv_read_button0( void );
 bool_t keybdrv_read_button1( void );
+
+void keybdrv_mouse_set_state( bool_t state );
 
 //////////////////////////////////////////////////////////////////////////////////////
 

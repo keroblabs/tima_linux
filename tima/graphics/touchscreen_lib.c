@@ -83,7 +83,7 @@ static touchscreen_event_t has_moved( touchscreen_app_data_t * data, uint16_t po
 static void touchscreen_lib_thread( void )
 {
     int app_target = TOUCHSCREEN_APP_NOT_SET;
-    int index;
+    int index = 0;
     uint16_t posx;
     uint16_t posy;
     uint16_t posz;

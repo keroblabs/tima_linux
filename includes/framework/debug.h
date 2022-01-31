@@ -22,7 +22,7 @@ bool_t debug_read_input( char * out );
 #undef DEBUG_PRINTK
 #endif
 
-#if defined _USE_LINUX
+#if defined _USE_LINUX || defined _USE_MACOS_SDL
 #define DEBUG_PRINTK printf
 #elif defined USE_SERIAL_PRINTF
 #define DEBUG_PRINTK debug_printk

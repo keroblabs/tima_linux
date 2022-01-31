@@ -24,7 +24,8 @@ BOARD_ROOT_PATH = $(DEFAULT_PATH)/Boards
 CINCDIR += $(ROOT_APP_PATH)
 CINCDIR += $(BOARD_ROOT_PATH)/include
 
-include $(BOARD_ROOT_PATH)/$(BOARD_NAME)/make/$(BOARD_NAME).make
+#include $(BOARD_ROOT_PATH)/$(BOARD_NAME)/make/$(BOARD_NAME).make
+include $(BOARD_ROOT_PATH)/$(BOARD_NAME)/make/makefile
 
 #
 # End of default include section
