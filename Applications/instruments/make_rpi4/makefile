@@ -21,7 +21,7 @@ PROJECT_PATH = instruments
 # Put here the board name: olimex, rpi
 BOARD_NAME = rpi
 USERNAME = pi
-TARGET_NAME = 192.168.1.181
+TARGET_NAME = 192.168.1.192
 #TARGET_NAME = 10.0.0.3
 
 # Tima OS paths
